@@ -25,7 +25,7 @@ export default function Error({
   return (
     <Section>
       <Container size="narrow" className="flex flex-col items-start gap-5">
-        <p className="text-sm font-semibold tracking-[0.14em] text-accent uppercase">
+        <p className="text-sm font-semibold tracking-[0.14em] text-accent-strong uppercase">
           Something went wrong
         </p>
         <h1 className="text-[2.125rem] leading-tight sm:text-h1">This page could not be loaded</h1>

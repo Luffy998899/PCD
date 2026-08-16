@@ -24,10 +24,16 @@
   --color-accent: #12805c;
   --color-accent-soft: #e8f5f0;
   --color-accent-foreground: #ffffff;
+  /* Darker accent for accent-coloured *text* on a tinted background. The base
+     accent reaches only 4.39:1 on accent-soft, below the 4.5:1 the PRD
+     requires, so text uses this instead. Fills keep the base value. */
+  --color-accent-strong: #0f6b4c;
 
   /* Semantic */
   --color-success: #15803d;
   --color-warning: #b45309;
+  /* Same reasoning as --color-accent-strong: warning text on a warning tint. */
+  --color-warning-strong: #92400e;
   --color-error: #b91c1c;
   --color-info: #0369a1;
 

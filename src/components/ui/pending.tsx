@@ -15,7 +15,7 @@ export function Pending({ label, className }: { label: string; className?: strin
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-sm border border-dashed border-warning/60 bg-warning/10 px-1.5 py-0.5 align-middle text-xs font-medium text-warning',
+        'inline-flex items-center rounded-sm border border-dashed border-warning/60 bg-warning/10 px-1.5 py-0.5 align-middle text-xs font-medium text-warning-strong',
         className,
       )}
       data-placeholder="true"
@@ -53,7 +53,7 @@ export function PendingBlock({ label, className }: { label: string; className?: 
   return (
     <p
       className={cn(
-        'rounded-md border border-dashed border-warning/60 bg-warning/5 px-4 py-3 text-sm text-warning',
+        'rounded-md border border-dashed border-warning/60 bg-warning/5 px-4 py-3 text-sm text-warning-strong',
         className,
       )}
       data-placeholder="true"

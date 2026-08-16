@@ -1,10 +1,9 @@
-import { MessageCircle } from 'lucide-react'
-
 import { displayName, getSiteSettings } from '@/lib/content/site-settings'
 import { getSnapshot } from '@/lib/content/home'
 import { whatsappLink } from '@/lib/env'
 import { Container, Section } from '@/components/ui/layout'
-import { ExternalLinkButton, LinkButton } from '@/components/ui/button'
+import { LinkButton } from '@/components/ui/button'
+import { WhatsAppLink } from '@/components/analytics/whatsapp-link'
 import { Pending } from '@/components/ui/pending'
 import { Card, CardBody } from '@/components/ui/card'
 
@@ -24,7 +23,7 @@ export async function HomeHero() {
     <section className="border-b border-border bg-surface">
       <Container className="grid gap-10 py-14 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-center lg:gap-16">
         <div className="flex flex-col gap-6">
-          <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+          <p className="text-xs font-semibold tracking-[0.14em] text-accent-strong uppercase">
             Pharmaceutical manufacturing and distribution
           </p>
 
@@ -62,10 +61,7 @@ export async function HomeHero() {
           </div>
 
           {whatsapp ? (
-            <ExternalLinkButton href={whatsapp} variant="ghost" size="sm" className="self-start">
-              <MessageCircle className="size-4" aria-hidden="true" />
-              Chat on WhatsApp
-            </ExternalLinkButton>
+            <WhatsAppLink href={whatsapp} context="home_hero" className="self-start" />
           ) : null}
         </div>
 
@@ -120,7 +116,7 @@ export async function HomeSnapshot() {
               <dd className="font-display text-3xl font-semibold text-primary">{stat.value}</dd>
               <dt className="text-sm text-muted-foreground">{stat.label}</dt>
               {stat.note ? (
-                <p className="text-xs text-muted-foreground/80">{stat.note}</p>
+                <p className="text-xs text-muted-foreground">{stat.note}</p>
               ) : null}
             </div>
           ))}

@@ -42,7 +42,7 @@ export default async function PharmacovigilancePage() {
       <Section spacing="compact">
         <Container>
           <div className="flex items-start gap-3 rounded-md border border-warning/40 bg-warning/5 p-5">
-            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-warning" aria-hidden="true" />
+            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-warning-strong" aria-hidden="true" />
             <div className="flex flex-col gap-1">
               <p className="font-medium text-foreground">
                 This form is not for medical emergencies.

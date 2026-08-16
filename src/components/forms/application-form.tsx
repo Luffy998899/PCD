@@ -6,6 +6,7 @@ import { CheckCircle2, Loader2 } from 'lucide-react'
 
 import { submitApplication } from '@/app/actions/application'
 import { MAX_UPLOAD_BYTES } from '@/lib/constants'
+import { trackEvent } from '@/lib/analytics'
 import { Button } from '@/components/ui/button'
 import { CheckboxField, HoneypotField, TextAreaField, TextField } from '@/components/forms/fields'
 
@@ -46,6 +47,7 @@ export function ApplicationForm({
     const result = await submitApplication(formData)
 
     if (result.ok) {
+      trackEvent('career_application_submitted', { role: appliedFor })
       setReference(result.reference)
       setStatus('success')
       formRef.current?.reset()

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Download, FileText, MessageCircle } from 'lucide-react'
+import { Download, FileText } from 'lucide-react'
 
 import { buildCanonicalUrl, buildMetadata } from '@/lib/seo/metadata'
 import { getProductBySlug, getPublishedProductRefs } from '@/lib/content/products'
@@ -14,7 +14,9 @@ import { Container, Section, SectionHeader } from '@/components/ui/layout'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardBody, CardTitle, DataList, DataRow } from '@/components/ui/card'
-import { ExternalLinkButton, LinkButton } from '@/components/ui/button'
+import { LinkButton } from '@/components/ui/button'
+import { WhatsAppLink } from '@/components/analytics/whatsapp-link'
+import { TrackView } from '@/components/analytics/ga4'
 import { ProductGallery } from '@/components/products/product-gallery'
 import { EnquiryForm } from '@/components/forms/enquiry-form'
 import { JsonLd } from '@/components/seo/json-ld'
@@ -107,6 +109,10 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
   return (
     <>
       <JsonLd data={productSchema} />
+      <TrackView
+        event="product_detail_viewed"
+        params={{ product: product.brand_name, therapy: product.therapy?.name }}
+      />
 
       <div className="border-b border-border bg-surface">
         <Container className="pt-6 pb-10">
@@ -165,10 +171,11 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                   Enquire about this product
                 </LinkButton>
                 {whatsapp ? (
-                  <ExternalLinkButton href={whatsapp} variant="ghost" size="md">
-                    <MessageCircle className="size-4" aria-hidden="true" />
-                    Chat on WhatsApp
-                  </ExternalLinkButton>
+                  <WhatsAppLink
+                    href={whatsapp}
+                    context={product.brand_name}
+                    size="md"
+                  />
                 ) : null}
               </div>
 

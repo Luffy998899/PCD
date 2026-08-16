@@ -10,6 +10,7 @@ import { Container } from '@/components/ui/layout'
 import { Logo } from '@/components/layout/logo'
 import { Pending } from '@/components/ui/pending'
 import { CookieSettingsButton } from '@/components/layout/cookie-consent'
+import { WhatsAppTextLink } from '@/components/analytics/whatsapp-link'
 
 function StatutoryRow({ label, value }: { label: string; value: string | null }) {
   return (
@@ -73,14 +74,7 @@ export async function SiteFooter() {
               {whatsapp ? (
                 <div className="flex gap-2.5">
                   <MessageCircle className="mt-0.5 size-4 shrink-0 opacity-70" aria-hidden="true" />
-                  <a
-                    className="hover:underline"
-                    href={whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Chat on WhatsApp
-                  </a>
+                  <WhatsAppTextLink href={whatsapp} className="hover:underline" />
                 </div>
               ) : null}
             </address>

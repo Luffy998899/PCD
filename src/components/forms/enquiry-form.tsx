@@ -8,6 +8,7 @@ import { CheckCircle2, Loader2 } from 'lucide-react'
 
 import { schemaForEnquiryType, type PublicEnquiryType } from '@/lib/validation/enquiry'
 import { submitEnquiry } from '@/app/actions/enquiry'
+import { trackEvent } from '@/lib/analytics'
 import { Button } from '@/components/ui/button'
 import {
   CheckboxField,
@@ -85,6 +86,18 @@ export function EnquiryForm({
 
   const requiresBusinessFields = enquiryType === 'business' || enquiryType === 'partner'
 
+  // Conversion measurement (PRD §6). Fires once, when the visitor first
+  // interacts with the form.
+  const startedRef = useRef(false)
+  const onFirstInteraction = () => {
+    if (startedRef.current) return
+    startedRef.current = true
+    trackEvent(enquiryType === 'product' ? 'product_enquiry_started' : 'enquiry_started', {
+      enquiry_type: enquiryType,
+      product: context?.productReference,
+    })
+  }
+
   const {
     register,
     handleSubmit,
@@ -126,8 +139,17 @@ export function EnquiryForm({
     })
 
     if (result.ok) {
+      trackEvent(
+        enquiryType === 'product'
+          ? 'product_enquiry_submitted'
+          : enquiryType === 'partner'
+            ? 'partner_enquiry_submitted'
+            : 'enquiry_submitted',
+        { enquiry_type: enquiryType, product: context?.productReference },
+      )
       setReference(result.reference)
       setStatus('success')
+      startedRef.current = false
       reset()
       return
     }
@@ -177,6 +199,7 @@ export function EnquiryForm({
       onSubmit={(event) => {
         void handleSubmit(submitValues)(event)
       }}
+      onFocus={onFirstInteraction}
       noValidate
       className="flex flex-col gap-5"
     >

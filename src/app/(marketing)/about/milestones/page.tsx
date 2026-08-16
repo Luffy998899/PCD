@@ -73,7 +73,7 @@ export default async function MilestonesPage() {
                       <p className="text-sm text-muted-foreground">{milestone.description}</p>
                     ) : null}
                     {milestone.source_reference ? (
-                      <p className="text-xs text-muted-foreground/80">
+                      <p className="text-xs text-muted-foreground">
                         Source: {milestone.source_reference}
                       </p>
                     ) : null}

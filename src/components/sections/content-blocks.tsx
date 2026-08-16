@@ -44,7 +44,7 @@ export function ContentBlocks({
                 ))
             : null}
           {block.source_reference ? (
-            <p className="text-xs text-muted-foreground/80">Source: {block.source_reference}</p>
+            <p className="text-xs text-muted-foreground">Source: {block.source_reference}</p>
           ) : null}
         </section>
       ))}

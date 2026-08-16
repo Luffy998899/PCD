@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 9 complete — Phase 10 next |
+| **Active phase** | Phase 10 complete — Phase 11 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -176,6 +176,27 @@ Updated at the end of every phase (Rules.md §24).
 - The enquiry strip gives business and product/medical enquiries equal weight.
 - Organization schema is emitted only once the company's real identity is known.
 
+### Phase 10 — SEO, Analytics, Accessibility & Performance
+- GA4 loads **only after** the visitor accepts analytics cookies — the script
+  tag is not rendered before consent, so declining produces no analytics network
+  request at all. Verified: the homepage HTML contains no googletagmanager
+  reference.
+- Conversion events wired per PRD §6: enquiry started/submitted, product enquiry
+  started/submitted, partner enquiry, WhatsApp click, product search, product
+  detail viewed, career application. Analytics is internal measurement only —
+  no counter derived from it is ever displayed.
+- LocalBusiness schema added to `/contact`, emitted only when a real company
+  name and a published office both exist.
+- **Contrast audit**: every token pair used for text was computed against WCAG.
+  Three failed and were fixed by adding `--color-accent-strong` (#0F6B4C) and
+  `--color-warning-strong` (#92400E) for accent/warning *text* on tinted
+  backgrounds, and by raising input placeholder opacity. Fills keep the exact
+  `Design.md` swatches. All pairs now ≥ 4.5:1.
+- Automated audit across 9 representative pages: exactly one `h1` each, no
+  heading-level skips, every `img` has `alt`, every form control is labelled,
+  and title/canonical/og/lang/skip-link are present. All 49 public routes
+  return 200.
+
 ---
 
 ## Key decisions
@@ -213,6 +234,11 @@ Updated at the end of every phase (Rules.md §24).
    missing client fact; conflating them would have produced misleading
    `[CLIENT TO PROVIDE]` markers.
 
+9. **Accessibility outranks the design swatch.** `Design.md`'s accent
+   (#12805C) fails 4.5:1 as text on its own soft tint, and the PRD sets 4.5:1 as
+   a requirement. Under the `Rules.md` §0 priority order the requirement wins,
+   so a darker variant was added for text while fills keep the specified colour.
+
 8. **No company facts are invented.** There is no client-supplied data yet, so
    company name, addresses, CIN/GST/licence numbers, statistics, products,
    people and certificates all render as placeholders or empty states.
@@ -231,6 +257,6 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 10 — SEO, analytics, accessibility and performance hardening: GA4 behind
-cookie consent, remaining schema helpers, Open Graph coverage, image and font
-optimisation, accessibility and performance passes.
+Phase 11 — Admin polish and content operations: authenticated admin area with
+server-enforced role checks, dashboard, enquiry and application review, and a
+draft/published workflow.

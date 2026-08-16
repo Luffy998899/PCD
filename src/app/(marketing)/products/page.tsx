@@ -15,6 +15,7 @@ import { ProductCard } from '@/components/products/product-card'
 import { ProductFilterBar } from '@/components/products/product-filters'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LinkButton } from '@/components/ui/button'
+import { TrackView } from '@/components/analytics/ga4'
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -69,6 +70,12 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
 
   return (
     <>
+      {filters.query ? (
+        <TrackView
+          event="product_search"
+          params={{ query: filters.query, results: result.total }}
+        />
+      ) : null}
       <PageHero
         eyebrow="Products"
         title="Product portfolio"

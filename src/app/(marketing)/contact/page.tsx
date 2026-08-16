@@ -10,8 +10,13 @@ import { PageHero } from '@/components/ui/page-hero'
 import { Card, CardBody, CardDescription, CardTitle } from '@/components/ui/card'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Pending } from '@/components/ui/pending'
-import { ExternalLinkButton, LinkButton } from '@/components/ui/button'
+import { LinkButton } from '@/components/ui/button'
+import { WhatsAppLink } from '@/components/analytics/whatsapp-link'
 import { EnquiryForm } from '@/components/forms/enquiry-form'
+import { JsonLd } from '@/components/seo/json-ld'
+import { buildCanonicalUrl } from '@/lib/seo/metadata'
+import { displayName } from '@/lib/content/site-settings'
+import { withoutPlaceholder } from '@/lib/content/placeholder'
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -38,8 +43,38 @@ export default async function ContactPage() {
   ])
   const whatsapp = whatsappLink('Hello, I would like to speak to your team.')
 
+  // LocalBusiness schema requires a real, verifiable address. It is emitted
+  // only when the company name and a published office both exist — never for a
+  // placeholder (Rules.md §19).
+  const companyName = withoutPlaceholder(displayName(settings))
+  const primaryOffice = offices[0]
+  const localBusinessSchema =
+    companyName && primaryOffice
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'LocalBusiness',
+          name: companyName,
+          url: buildCanonicalUrl('/contact'),
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: primaryOffice.address,
+            addressLocality: primaryOffice.city ?? undefined,
+            addressRegion: primaryOffice.state ?? undefined,
+            postalCode: primaryOffice.postal_code ?? undefined,
+            addressCountry: primaryOffice.country,
+          },
+          ...(primaryOffice.phone || settings.primary_phone
+            ? { telephone: primaryOffice.phone ?? settings.primary_phone }
+            : {}),
+          ...(primaryOffice.email || settings.primary_email
+            ? { email: primaryOffice.email ?? settings.primary_email }
+            : {}),
+        }
+      : null
+
   return (
     <>
+      <JsonLd data={localBusinessSchema} />
       <PageHero
         title="Contact us"
         description="Reach the right team directly. Business, product and medical enquiries are handled separately so each one goes to the people who can answer it."
@@ -95,9 +130,12 @@ export default async function ContactPage() {
                   WhatsApp
                 </CardTitle>
                 {whatsapp ? (
-                  <ExternalLinkButton href={whatsapp} variant="outline" size="sm" className="self-start">
-                    Chat on WhatsApp
-                  </ExternalLinkButton>
+                  <WhatsAppLink
+                    href={whatsapp}
+                    context="contact_page"
+                    variant="outline"
+                    className="self-start"
+                  />
                 ) : (
                   <Pending label="Official WhatsApp number" />
                 )}
@@ -185,7 +223,7 @@ export default async function ContactPage() {
               {offices.map((office) => (
                 <Card key={office.id}>
                   <CardBody className="flex flex-col gap-3">
-                    <span className="text-xs font-semibold tracking-[0.12em] text-accent uppercase">
+                    <span className="text-xs font-semibold tracking-[0.12em] text-accent-strong uppercase">
                       {OFFICE_TYPE_LABELS[office.office_type] ?? office.office_type}
                     </span>
                     <CardTitle as="h3" className="text-base">

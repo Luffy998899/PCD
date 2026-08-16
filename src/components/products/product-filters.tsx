@@ -44,7 +44,7 @@ export function ProductFilterBar({
             type="search"
             defaultValue={filters.query ?? ''}
             placeholder="Search by brand name or composition"
-            className="w-full rounded-sm border border-border bg-surface py-2.5 pr-3 pl-9 text-[0.9375rem] text-foreground placeholder:text-muted-foreground/60 focus-visible:border-primary"
+            className="w-full rounded-sm border border-border bg-surface py-2.5 pr-3 pl-9 text-[0.9375rem] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
           />
         </div>
         <Button type="submit" size="md">

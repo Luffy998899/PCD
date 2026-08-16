@@ -54,7 +54,7 @@ function describedBy(id: string, hint?: string, error?: string): string | undefi
 }
 
 const controlClasses =
-  'w-full rounded-sm border bg-surface px-3 py-2.5 text-[0.9375rem] text-foreground transition-colors duration-150 placeholder:text-muted-foreground/60 focus-visible:border-primary'
+  'w-full rounded-sm border bg-surface px-3 py-2.5 text-[0.9375rem] text-foreground transition-colors duration-150 placeholder:text-muted-foreground focus-visible:border-primary'
 
 export type TextFieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string
