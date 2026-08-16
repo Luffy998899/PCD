@@ -114,6 +114,86 @@ export type EnquiryInsert = Omit<EnquiryRow, 'id' | 'created_at' | 'status' | 'i
   status?: EnquiryRow['status']
 }
 
+// ---------------------------------------------------------------------------
+// Phase 2 — About & corporate authority
+// ---------------------------------------------------------------------------
+
+export type ContentBlockRow = Provenance & {
+  id: string
+  page_key: string
+  block_key: string
+  heading: string | null
+  body: string | null
+  display_order: number
+  status: PublishStatus
+  created_at: string
+  updated_at: string
+}
+
+export type PersonCategory = 'founder' | 'board' | 'leadership'
+
+export type PersonRow = {
+  id: string
+  name: string
+  slug: string
+  designation: string
+  category: PersonCategory
+  qualification: string | null
+  bio: string | null
+  message: string | null
+  photo_url: string | null
+  photo_alt: string | null
+  linkedin_url: string | null
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type MilestoneRow = {
+  id: string
+  year: number
+  month: number | null
+  title: string
+  description: string | null
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  source_document_url: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+}
+
+export type CoreValueRow = {
+  id: string
+  title: string
+  description: string
+  icon: string | null
+  display_order: number
+  status: PublishStatus
+}
+
+export type AwardRow = {
+  id: string
+  title: string
+  awarded_by: string | null
+  year: number | null
+  description: string | null
+  image_url: string | null
+  document_url: string | null
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  source_document_url: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -121,6 +201,11 @@ export type Database = {
       offices: TableDef<OfficeRow>
       department_contacts: TableDef<DepartmentContactRow>
       enquiries: TableDef<EnquiryRow, EnquiryInsert>
+      content_blocks: TableDef<ContentBlockRow>
+      people: TableDef<PersonRow>
+      milestones: TableDef<MilestoneRow>
+      core_values: TableDef<CoreValueRow>
+      awards: TableDef<AwardRow>
     }
     Views: Record<never, never>
     Functions: Record<never, never>

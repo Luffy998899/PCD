@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 1 complete — Phase 2 next |
+| **Active phase** | Phase 2 complete — Phase 3 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -51,6 +51,19 @@ Updated at the end of every phase (Rules.md §24).
 - Cookie consent via `useSyncExternalStore` (analytics opt-in, reopenable from
   the footer).
 - `Breadcrumbs` with BreadcrumbList schema, `PageHero`, `JsonLd`, `DevNote`.
+
+### Phase 2 — About & Corporate Authority
+- Migration `0002_about.sql`: `content_blocks`, `people`, `milestones`,
+  `core_values`, `awards`, each with publish status, provenance columns and a
+  published-only public read policy.
+- `content_blocks` is a shared, page-keyed store for editable narrative copy,
+  reused by later phases instead of a new table per page.
+- Routes: `/about` hub plus overview, vision & mission, chairman's message,
+  board, leadership, milestones, values and awards.
+- `PeopleCard` renders a neutral monogram when no photograph exists — no stock
+  portrait ever stands in for a named individual.
+- Milestones and awards display their `source_reference` where recorded.
+- Admin-entered body copy is rendered as text nodes, never as raw HTML.
 
 ---
 
@@ -107,6 +120,6 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 2 — About & corporate authority: company overview, vision & mission,
-chairman's message, board, leadership, milestones, values and awards, backed by
-a `people` content model with reusable profile components.
+Phase 3 — Science, manufacturing & quality: facilities, QA/QC, certificates with
+metadata and downloads, regulatory compliance, and the pharmacovigilance
+reporting route.
