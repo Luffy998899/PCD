@@ -653,6 +653,40 @@ export type TestimonialRow = {
   created_at: string
 }
 
+// ---------------------------------------------------------------------------
+// Phase 11 — Admin
+// ---------------------------------------------------------------------------
+
+export type AdminRole =
+  | 'super_admin'
+  | 'content_admin'
+  | 'sales_admin'
+  | 'hr_admin'
+  | 'quality_admin'
+
+export type AdminUserRow = {
+  id: string
+  email: string
+  full_name: string | null
+  role: AdminRole
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type AuditLogRow = {
+  id: string
+  actor_id: string | null
+  actor_email: string | null
+  action: string
+  entity: string
+  entity_id: string | null
+  summary: string | null
+  created_at: string
+}
+
+export type AuditLogInsert = Omit<AuditLogRow, 'id' | 'created_at'>
+
 export type Database = {
   public: {
     Tables: {
@@ -693,6 +727,8 @@ export type Database = {
       job_applications: TableDef<JobApplicationRow, JobApplicationInsert>
       memberships: TableDef<MembershipRow>
       testimonials: TableDef<TestimonialRow>
+      admin_users: TableDef<AdminUserRow>
+      audit_log: TableDef<AuditLogRow, AuditLogInsert>
     }
     Views: Record<never, never>
     Functions: Record<never, never>

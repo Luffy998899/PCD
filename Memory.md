@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 10 complete — Phase 11 next |
+| **Active phase** | Phase 11 complete — Phase 12 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -197,6 +197,27 @@ Updated at the end of every phase (Rules.md §24).
   and title/canonical/og/lang/skip-link are present. All 49 public routes
   return 200.
 
+### Phase 11 — Admin & Content Operations
+- Migration `0009_admin.sql`: `admin_users` (auth user → role), `audit_log`, and
+  `is_admin()` / `has_admin_role()` SECURITY DEFINER helpers used by every admin
+  policy.
+- **Authorization lives in the database.** Each content table gets an admin
+  manage policy keyed on role; leads are readable by sales/content; safety
+  reports by quality only; applications and the CV bucket by HR only. The UI
+  checks the same rules, but the UI is not what protects the data.
+- Being signed in grants nothing: a user needs an active `admin_users` row.
+- Three independent gates: middleware (redirect), `requireAdmin()` per page and
+  per action, and RLS.
+- Admin routes are `force-dynamic` so a build performed without Supabase
+  configured cannot prerender authenticated screens as static output.
+- CVs are opened through a 5-minute signed URL requested by a server action; the
+  URL never appears in page source, and every issue is audited.
+- Audit rows are written on status changes, publish/unpublish and CV access. The
+  safety-report audit summary deliberately carries no clinical detail.
+- Screens: dashboard (role-scoped counts), enquiries, applications, safety
+  reports, product publishing, and a page-content editor whose keys map to what
+  the public pages read.
+
 ---
 
 ## Key decisions
@@ -257,6 +278,6 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 11 — Admin polish and content operations: authenticated admin area with
-server-enforced role checks, dashboard, enquiry and application review, and a
-draft/published workflow.
+Phase 12 — Launch readiness: the pre-launch checklist, a content-integrity
+guard that fails the build if placeholder content would ship, and final
+verification.
