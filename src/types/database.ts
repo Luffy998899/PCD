@@ -409,6 +409,76 @@ export type ProductDocumentRow = {
   created_at: string
 }
 
+// ---------------------------------------------------------------------------
+// Phase 6 — Network & reach
+// ---------------------------------------------------------------------------
+
+export type NetworkStateRow = {
+  id: string
+  name: string
+  slug: string
+  region: 'north' | 'south' | 'east' | 'west' | 'central' | 'north-east' | null
+  since_year: number | null
+  notes: string | null
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+}
+
+export type NetworkDistrictRow = {
+  id: string
+  state_id: string
+  name: string
+  status: PublishStatus
+  source_reference: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+}
+
+export type NetworkCountryRow = {
+  id: string
+  name: string
+  slug: string
+  iso_code: string | null
+  since_year: number | null
+  registration_status:
+    | 'registered'
+    | 'under_registration'
+    | 'export_only'
+    | 'not_applicable'
+    | null
+  notes: string | null
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  source_document_url: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+}
+
+export type PartnerRow = {
+  id: string
+  name: string
+  partner_type: 'distributor' | 'stockist' | 'cnf' | 'institutional'
+  city: string | null
+  state_id: string | null
+  contact_person: string | null
+  phone: string | null
+  email: string | null
+  address: string | null
+  consent_to_publish: boolean
+  display_order: number
+  status: PublishStatus
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -436,6 +506,10 @@ export type Database = {
       products: TableDef<ProductRow>
       product_images: TableDef<ProductImageRow>
       product_documents: TableDef<ProductDocumentRow>
+      network_states: TableDef<NetworkStateRow>
+      network_districts: TableDef<NetworkDistrictRow>
+      network_countries: TableDef<NetworkCountryRow>
+      partners: TableDef<PartnerRow>
     }
     Views: Record<never, never>
     Functions: Record<never, never>

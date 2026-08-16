@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 5 complete — Phase 6 next |
+| **Active phase** | Phase 6 complete — Phase 7 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -114,6 +114,19 @@ Updated at the end of every phase (Rules.md §24).
   agreement. No ROI calculator, countdown, scarcity claim or fake counter exists
   anywhere in the codebase.
 
+### Phase 6 — Network & Reach
+- Migration `0005_network.sql`: `network_states`, `network_districts`,
+  `network_countries`, `partners`.
+- Coverage figures are counted from published rows at render time. No aggregate
+  "states covered" value is stored anywhere, so a coverage number the underlying
+  records do not support cannot be displayed.
+- Coverage is presented as structured tables, not a decorative map or globe. A
+  real map is added only once genuine location data exists (Design.md §15).
+- A partner's contact details are published only when `consent_to_publish` is
+  true — enforced in the RLS policy and repeated at the call site.
+- `find-a-pharmacy` has no route: the page is created only if genuine
+  pharmacy-level data is supplied (Architecture.md §6).
+
 ---
 
 ## Key decisions
@@ -169,6 +182,6 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 6 — Network & reach: network overview, India presence with state/district
-coverage, global presence, distributors and stockists — all derived from
-database records, with no fabricated coverage.
+Phase 7 — Media, blogs & downloads: press releases, news, blogs with categories,
+authors, medically-reviewed flag and Article schema, gallery, downloads and
+events.
