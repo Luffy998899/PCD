@@ -479,6 +479,88 @@ export type PartnerRow = {
   created_at: string
 }
 
+// ---------------------------------------------------------------------------
+// Phase 7 — Media, blogs & downloads
+// ---------------------------------------------------------------------------
+
+export type ArticleType = 'blog' | 'news' | 'press_release'
+
+export type ArticleCategoryRow = {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+  display_order: number
+  status: PublishStatus
+}
+
+export type ArticleRow = {
+  id: string
+  article_type: ArticleType
+  title: string
+  slug: string
+  category_id: string | null
+  author_id: string | null
+  author_name: string | null
+  excerpt: string | null
+  body: string
+  hero_image_url: string | null
+  hero_image_alt: string | null
+  medically_reviewed: boolean
+  reviewer_name: string | null
+  reviewer_credential: string | null
+  reviewed_on: string | null
+  related_therapy_id: string | null
+  related_product_id: string | null
+  source_url: string | null
+  published_at: string | null
+  status: PublishStatus
+  seo_title: string | null
+  seo_description: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type GalleryItemRow = {
+  id: string
+  title: string
+  alt_text: string
+  image_url: string
+  category: 'facility' | 'team' | 'event' | 'product' | 'other'
+  captured_on: string | null
+  display_order: number
+  status: PublishStatus
+  created_at: string
+}
+
+export type DownloadRow = {
+  id: string
+  title: string
+  description: string | null
+  file_url: string
+  file_type: string
+  file_size_kb: number | null
+  category: 'general' | 'product' | 'quality' | 'corporate' | 'partner'
+  display_order: number
+  status: PublishStatus
+  updated_on: string | null
+  created_at: string
+}
+
+export type EventRow = {
+  id: string
+  title: string
+  description: string | null
+  location: string | null
+  starts_on: string
+  ends_on: string | null
+  event_url: string | null
+  image_url: string | null
+  image_alt: string | null
+  status: PublishStatus
+  created_at: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -510,6 +592,11 @@ export type Database = {
       network_districts: TableDef<NetworkDistrictRow>
       network_countries: TableDef<NetworkCountryRow>
       partners: TableDef<PartnerRow>
+      article_categories: TableDef<ArticleCategoryRow>
+      articles: TableDef<ArticleRow>
+      gallery_items: TableDef<GalleryItemRow>
+      downloads: TableDef<DownloadRow>
+      events: TableDef<EventRow>
     }
     Views: Record<never, never>
     Functions: Record<never, never>

@@ -4,6 +4,7 @@ import { SITE_URL } from '@/lib/env'
 import { legalNavigation } from '@/data/navigation'
 import { getPrimaryNavigation } from '@/lib/content/navigation'
 import { getDivisions, getPublishedProductRefs, getTherapies } from '@/lib/content/products'
+import { getPublishedArticleRefs } from '@/lib/content/media'
 
 /**
  * XML sitemap generated from navigation plus published records
@@ -32,10 +33,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === '/' ? 1 : 0.7,
   }))
 
-  const [products, therapies, divisions] = await Promise.all([
+  const [products, therapies, divisions, articles] = await Promise.all([
     getPublishedProductRefs(),
     getTherapies(),
     getDivisions(),
+    getPublishedArticleRefs(),
   ])
 
   for (const product of products) {
@@ -61,6 +63,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${SITE_URL}/products/division/${division.slug}`,
       lastModified: new Date(division.updated_at),
       changeFrequency: 'monthly',
+      priority: 0.6,
+    })
+  }
+
+  const ARTICLE_BASE_PATHS = {
+    blog: '/media/blogs',
+    news: '/media/news',
+    press_release: '/media/press-releases',
+  } as const
+
+  for (const article of articles) {
+    entries.push({
+      url: `${SITE_URL}${ARTICLE_BASE_PATHS[article.article_type]}/${article.slug}`,
+      lastModified: new Date(article.updated_at),
+      changeFrequency: 'yearly',
       priority: 0.6,
     })
   }

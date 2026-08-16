@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 6 complete — Phase 7 next |
+| **Active phase** | Phase 7 complete — Phase 8 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -127,6 +127,24 @@ Updated at the end of every phase (Rules.md §24).
 - `find-a-pharmacy` has no route: the page is created only if genuine
   pharmacy-level data is supplied (Architecture.md §6).
 
+### Phase 7 — Media, Blogs & Downloads
+- Migration `0006_media.sql`: `article_categories`, `articles`, `gallery_items`,
+  `downloads`, `events`.
+- Press releases, news and blogs share one `articles` table separated by
+  `article_type`: same lifecycle, same SEO surface, same author model — three
+  near-identical tables would have been duplication.
+- A published article must have a publish date (DB constraint), and the read
+  policy requires `published_at <= now()`, so drafts and scheduled posts cannot
+  leak to public pages.
+- `medically_reviewed` is only valid with a named reviewer, enforced by a DB
+  check constraint as well as in the UI.
+- Gallery `alt_text` is `not null` — an unlabelled image gallery is unusable
+  with a screen reader.
+- Article schema carries only real headline, dates and publisher; the related
+  product link is re-checked against published status so removed products leave
+  no broken links.
+- Articles are added to the XML sitemap.
+
 ---
 
 ## Key decisions
@@ -182,6 +200,5 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 7 — Media, blogs & downloads: press releases, news, blogs with categories,
-authors, medically-reviewed flag and Article schema, gallery, downloads and
-events.
+Phase 8 — Careers: life at the company, why work with us, current openings,
+opening detail pages and the application flow with private CV storage.
