@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 7 complete — Phase 8 next |
+| **Active phase** | Phase 8 complete — Phase 9 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -145,6 +145,21 @@ Updated at the end of every phase (Rules.md §24).
   no broken links.
 - Articles are added to the XML sitemap.
 
+### Phase 8 — Careers
+- Migration `0007_careers.sql`: `job_openings`, `job_applications`, and a
+  **private** `private-documents` storage bucket with a 5 MB limit and a MIME
+  allow-list.
+- CVs are referenced by storage path, never by public URL. No storage policy
+  grants anonymous access; uploads go through a server action using the service
+  role, and admin downloads will use short-lived signed URLs.
+- The CV storage path is derived from the role slug plus a random UUID — never
+  from the uploaded file name — so a crafted name cannot escape the folder.
+- If the application insert fails after upload, the orphaned file is removed.
+- `hiring_status` is separate from `status`: a filled role stays reachable (so
+  old links do not 404) but is `noindex`, and its form is replaced with a clear
+  "this role is closed" panel.
+- Applications are insert-only for the public; there is no public select policy.
+
 ---
 
 ## Key decisions
@@ -200,5 +215,5 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 8 — Careers: life at the company, why work with us, current openings,
-opening detail pages and the application flow with private CV storage.
+Phase 9 — Homepage assembly: compose the homepage from content already verified
+on the inner pages, in the section order set by PRD §7.

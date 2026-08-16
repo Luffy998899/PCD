@@ -561,6 +561,60 @@ export type EventRow = {
   created_at: string
 }
 
+// ---------------------------------------------------------------------------
+// Phase 8 — Careers
+// ---------------------------------------------------------------------------
+
+export type JobOpeningRow = {
+  id: string
+  title: string
+  slug: string
+  department: string
+  location: string
+  employment_type: 'full_time' | 'part_time' | 'contract' | 'internship'
+  experience_min: number | null
+  experience_max: number | null
+  positions: number | null
+  summary: string | null
+  description: string
+  responsibilities: string | null
+  requirements: string | null
+  posted_on: string
+  closes_on: string | null
+  hiring_status: 'open' | 'closed'
+  status: PublishStatus
+  seo_title: string | null
+  seo_description: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type JobApplicationRow = {
+  id: string
+  job_opening_id: string | null
+  applied_for: string
+  name: string
+  email: string
+  phone: string
+  current_location: string | null
+  experience_years: number | null
+  current_employer: string | null
+  notice_period: string | null
+  message: string | null
+  cv_storage_path: string | null
+  cv_file_name: string | null
+  consent: boolean
+  source_page: string | null
+  status: 'new' | 'shortlisted' | 'rejected' | 'hired' | 'spam'
+  internal_notes: string | null
+  created_at: string
+}
+
+export type JobApplicationInsert = Omit<
+  JobApplicationRow,
+  'id' | 'created_at' | 'status' | 'internal_notes'
+>
+
 export type Database = {
   public: {
     Tables: {
@@ -597,6 +651,8 @@ export type Database = {
       gallery_items: TableDef<GalleryItemRow>
       downloads: TableDef<DownloadRow>
       events: TableDef<EventRow>
+      job_openings: TableDef<JobOpeningRow>
+      job_applications: TableDef<JobApplicationRow, JobApplicationInsert>
     }
     Views: Record<never, never>
     Functions: Record<never, never>
