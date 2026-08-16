@@ -6,10 +6,10 @@ import { usePathname } from 'next/navigation'
 import { ChevronDown, Menu, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { headerAction, primaryNavigation } from '@/data/navigation'
+import { headerAction, type NavGroup } from '@/data/navigation'
 import { buttonVariants } from '@/components/ui/button'
 
-export function MobileNav() {
+export function MobileNav({ groups }: { groups: NavGroup[] }) {
   const [open, setOpen] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
   const pathname = usePathname()
@@ -66,7 +66,7 @@ export function MobileNav() {
       >
         <nav aria-label="Main">
           <ul className="flex flex-col">
-            {primaryNavigation.map((group) => {
+            {groups.map((group) => {
               const isOpen = expanded === group.label
               return (
                 <li key={group.label} className="border-b border-border">

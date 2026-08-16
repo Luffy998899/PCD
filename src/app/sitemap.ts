@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
 
 import { SITE_URL } from '@/lib/env'
-import { legalNavigation, primaryNavigation } from '@/data/navigation'
+import { legalNavigation } from '@/data/navigation'
+import { getPrimaryNavigation } from '@/lib/content/navigation'
 import { getDivisions, getPublishedProductRefs, getTherapies } from '@/lib/content/products'
 
 /**
@@ -15,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
   const staticPaths = new Set<string>(['/'])
-  for (const group of primaryNavigation) {
+  for (const group of await getPrimaryNavigation()) {
     staticPaths.add(group.href)
     for (const link of group.links) staticPaths.add(link.href)
   }

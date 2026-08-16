@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-import { legalNavigation, primaryNavigation } from '@/data/navigation'
+import { legalNavigation } from '@/data/navigation'
+import { getPrimaryNavigation } from '@/lib/content/navigation'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { Container, Section } from '@/components/ui/layout'
 import { PageHero } from '@/components/ui/page-hero'
@@ -18,7 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
  * Human-readable sitemap. The machine-readable XML sitemap is generated
  * separately at /sitemap.xml.
  */
-export default function SitemapPage() {
+export default async function SitemapPage() {
+  const navigation = await getPrimaryNavigation()
+
   return (
     <>
       <PageHero
@@ -30,7 +33,7 @@ export default function SitemapPage() {
       <Section>
         <Container>
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {primaryNavigation.map((group) => (
+            {navigation.map((group) => (
               <nav key={group.label} aria-labelledby={`sitemap-${group.href}`}>
                 <h2 id={`sitemap-${group.href}`} className="text-lg">
                   <Link href={group.href} className="text-foreground hover:text-primary">

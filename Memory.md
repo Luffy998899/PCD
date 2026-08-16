@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 4 complete — Phase 5 next |
+| **Active phase** | Phase 5 complete — Phase 6 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -98,6 +98,22 @@ Updated at the end of every phase (Rules.md §24).
 - `/sitemap.xml` and `/robots.ts`: robots disallows everything unless
   `NEXT_PUBLIC_APP_ENV=production`, so staging cannot be indexed.
 
+### Phase 5 — Divisions & Partner With Us
+- Navigation is now resolved against published records
+  (`lib/content/navigation.ts`): the Divisions dropdown lists only divisions
+  that exist in the database, and Products gains published therapies. Which
+  divisions a company operates is a business fact, so it is no longer asserted
+  by static config.
+- `/divisions` overview and `/divisions/[slug]` detail pages, each showing the
+  division's products and routing to the business enquiry.
+- `/network/partner-with-us`: a qualification workflow driven by editable
+  content blocks covering eligibility, documents, territory model, support,
+  training, commercial terms and onboarding.
+- The partner page states plainly what the company does **not** do — no earnings
+  projections, no online territory availability, no payment before a written
+  agreement. No ROI calculator, countdown, scarcity claim or fake counter exists
+  anywhere in the codebase.
+
 ---
 
 ## Key decisions
@@ -153,6 +169,6 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 5 — Divisions & Partner With Us: division overview and detail pages, and
-the PCD partner experience as a qualification workflow (no ROI calculator, no
-territory checker, no availability claims).
+Phase 6 — Network & reach: network overview, India presence with state/district
+coverage, global presence, distributors and stockists — all derived from
+database records, with no fabricated coverage.

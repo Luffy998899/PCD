@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
 
-import { headerAction, primaryNavigation } from '@/data/navigation'
+import { headerAction } from '@/data/navigation'
+import { getPrimaryNavigation } from '@/lib/content/navigation'
 import { displayName, getSiteSettings } from '@/lib/content/site-settings'
 import { buttonVariants } from '@/components/ui/button'
 import { Container } from '@/components/ui/layout'
@@ -16,7 +17,7 @@ import { MobileNav } from '@/components/layout/mobile-nav'
  * depends on hover alone.
  */
 export async function SiteHeader() {
-  const settings = await getSiteSettings()
+  const [settings, navigation] = await Promise.all([getSiteSettings(), getPrimaryNavigation()])
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface/95 backdrop-blur-sm">
@@ -25,7 +26,7 @@ export async function SiteHeader() {
 
         <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center">
-            {primaryNavigation.map((group) => (
+            {navigation.map((group) => (
               <li key={group.label} className="group relative">
                 <Link
                   href={group.href}
@@ -64,7 +65,7 @@ export async function SiteHeader() {
           >
             {headerAction.label}
           </Link>
-          <MobileNav />
+          <MobileNav groups={navigation} />
         </div>
       </Container>
     </header>

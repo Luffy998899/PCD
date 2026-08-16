@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 
-import { footerColumns, legalNavigation } from '@/data/navigation'
+import { legalNavigation } from '@/data/navigation'
+import { getFooterColumns } from '@/lib/content/navigation'
 import { displayName, getSiteSettings } from '@/lib/content/site-settings'
 import { FOOTER_SAFETY_STATEMENT } from '@/lib/constants'
 import { whatsappLink } from '@/lib/env'
@@ -24,7 +25,7 @@ function StatutoryRow({ label, value }: { label: string; value: string | null })
 }
 
 export async function SiteFooter() {
-  const settings = await getSiteSettings()
+  const [settings, columns] = await Promise.all([getSiteSettings(), getFooterColumns()])
   const name = displayName(settings)
   const whatsapp = whatsappLink()
 
@@ -86,7 +87,7 @@ export async function SiteFooter() {
           </div>
 
           <nav aria-label="Footer" className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {footerColumns.map((column) => (
+            {columns.map((column) => (
               <div key={column.label}>
                 <h2 className="font-display text-sm font-semibold tracking-wide text-primary-foreground uppercase">
                   {column.label}

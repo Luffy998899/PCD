@@ -39,13 +39,10 @@ export const primaryNavigation: NavGroup[] = [
   {
     label: 'Divisions',
     href: '/divisions',
-    links: [
-      { label: 'Ethical / Prescription', href: '/divisions/ethical' },
-      { label: 'PCD Franchise', href: '/divisions/pcd' },
-      { label: 'OTC & Consumer Health', href: '/divisions/otc' },
-      { label: 'Institutional & Government', href: '/divisions/institutional' },
-      { label: 'Export / International', href: '/divisions/export' },
-    ],
+    // Which divisions the company actually operates is a business fact, so the
+    // sub-links are resolved from published records at render time
+    // (`lib/content/navigation.ts`).
+    links: [],
   },
   {
     label: 'Products',
@@ -132,13 +129,10 @@ export const footerColumns: NavGroup[] = [
   {
     label: 'Divisions',
     href: '/divisions',
-    links: [
-      { label: 'Ethical / Prescription', href: '/divisions/ethical' },
-      { label: 'PCD Franchise', href: '/divisions/pcd' },
-      { label: 'OTC & Consumer Health', href: '/divisions/otc' },
-      { label: 'Institutional & Government', href: '/divisions/institutional' },
-      { label: 'Export / International', href: '/divisions/export' },
-    ],
+    // Which divisions the company actually operates is a business fact, so the
+    // sub-links are resolved from published records at render time
+    // (`lib/content/navigation.ts`).
+    links: [],
   },
   {
     label: 'Products',
