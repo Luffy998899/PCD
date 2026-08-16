@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 2 complete — Phase 3 next |
+| **Active phase** | Phase 3 complete — Phase 4 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -64,6 +64,21 @@ Updated at the end of every phase (Rules.md §24).
   portrait ever stands in for a named individual.
 - Milestones and awards display their `source_reference` where recorded.
 - Admin-entered body copy is rendered as text nodes, never as raw HTML.
+
+### Phase 3 — Science, Manufacturing & Quality
+- Migration `0003_science_quality.sql`: `facilities`, `facility_specs`,
+  `certificates`, `quality_tests`, `regulatory_items`,
+  `pharmacovigilance_reports`.
+- `facility_specs` stores label/value rows instead of fixed columns, so the
+  company publishes only the figures it can evidence and simply omits the rest.
+- `CertificateCard` always shows the issuing body and validity; a lapsed
+  certificate is labelled rather than presented as current.
+- Routes: `/science-quality` hub, R&D, manufacturing (with per-facility
+  technical tables that scroll horizontally on mobile), quality, certifications,
+  regulatory, pharmacovigilance.
+- Pharmacovigilance reporting is a separate table, form and server action from
+  enquiries: different retention, different access, different workflow. The
+  narrative is never logged and never included in notification email.
 
 ---
 
@@ -120,6 +135,6 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 3 — Science, manufacturing & quality: facilities, QA/QC, certificates with
-metadata and downloads, regulatory compliance, and the pharmacovigilance
-reporting route.
+Phase 4 — Products & product catalogue: product schema, therapies, divisions,
+dosage forms, listing with filters, product detail pages with prescribing
+information, product enquiry and Product schema.

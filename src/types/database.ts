@@ -194,6 +194,122 @@ export type AwardRow = {
   created_at: string
 }
 
+// ---------------------------------------------------------------------------
+// Phase 3 — Science, manufacturing & quality
+// ---------------------------------------------------------------------------
+
+export type FacilityRow = Provenance & {
+  id: string
+  name: string
+  slug: string
+  facility_type: 'manufacturing' | 'laboratory' | 'warehouse' | 'rnd'
+  summary: string | null
+  description: string | null
+  address: string | null
+  city: string | null
+  state: string | null
+  country: string
+  commissioned_year: number | null
+  hero_image_url: string | null
+  hero_image_alt: string | null
+  display_order: number
+  status: PublishStatus
+  created_at: string
+  updated_at: string
+}
+
+export type FacilitySpecRow = {
+  id: string
+  facility_id: string
+  category: 'general' | 'production' | 'quality' | 'utilities'
+  label: string
+  value: string
+  unit: string | null
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  source_document_url: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+}
+
+export type CertificateRow = {
+  id: string
+  name: string
+  issuing_body: string
+  certificate_number: string | null
+  scope: string | null
+  issued_on: string | null
+  valid_until: string | null
+  document_url: string | null
+  image_url: string | null
+  category: 'quality' | 'regulatory' | 'product' | 'environment' | 'other'
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  source_note: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type QualityTestRow = {
+  id: string
+  name: string
+  description: string | null
+  equipment: string | null
+  stage: 'raw_material' | 'in_process' | 'finished_product' | 'stability' | 'packaging'
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  created_at: string
+}
+
+export type RegulatoryItemRow = {
+  id: string
+  title: string
+  description: string | null
+  reference_number: string | null
+  document_url: string | null
+  category: 'compliance' | 'licence' | 'policy' | 'submission'
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  source_document_url: string | null
+  verified_by: string | null
+  verified_at: string | null
+  valid_until: string | null
+  created_at: string
+}
+
+export type PharmacovigilanceReportRow = {
+  id: string
+  report_type: 'adverse_event' | 'product_complaint'
+  reporter_name: string
+  reporter_email: string
+  reporter_phone: string
+  reporter_category: 'patient' | 'physician' | 'pharmacist' | 'other_hcp' | 'other'
+  product_name: string | null
+  batch_number: string | null
+  expiry_date: string | null
+  event_description: string
+  event_started_on: string | null
+  patient_age_group: string | null
+  patient_sex: string | null
+  consent: boolean
+  source_page: string | null
+  status: EnquiryRow['status']
+  internal_notes: string | null
+  created_at: string
+}
+
+export type PharmacovigilanceReportInsert = Omit<
+  PharmacovigilanceReportRow,
+  'id' | 'created_at' | 'status' | 'internal_notes'
+>
+
 export type Database = {
   public: {
     Tables: {
@@ -206,6 +322,15 @@ export type Database = {
       milestones: TableDef<MilestoneRow>
       core_values: TableDef<CoreValueRow>
       awards: TableDef<AwardRow>
+      facilities: TableDef<FacilityRow>
+      facility_specs: TableDef<FacilitySpecRow>
+      certificates: TableDef<CertificateRow>
+      quality_tests: TableDef<QualityTestRow>
+      regulatory_items: TableDef<RegulatoryItemRow>
+      pharmacovigilance_reports: TableDef<
+        PharmacovigilanceReportRow,
+        PharmacovigilanceReportInsert
+      >
     }
     Views: Record<never, never>
     Functions: Record<never, never>
