@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run typecheck && npm run lint && npm run build"
+    "verify": "npm run typecheck && npm run lint && npm run build && npm run check:launch",
+    "check:launch": "node scripts/check-launch-readiness.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

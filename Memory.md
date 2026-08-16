@@ -9,8 +9,8 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 11 complete — Phase 12 next |
-| **App state** | Boots, builds clean, no TypeScript or lint errors |
+| **Active phase** | Phase 12 complete — all phases delivered |
+| **App state** | Builds clean. 49 public routes + 7 admin routes. Typecheck, lint, build and launch gate all pass. |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
 ---
@@ -218,6 +218,21 @@ Updated at the end of every phase (Rules.md §24).
   reports, product publishing, and a page-content editor whose keys map to what
   the public pages read.
 
+### Phase 12 — Launch Readiness
+- `scripts/check-launch-readiness.mjs` (`npm run check:launch`), wired into
+  `npm run verify`. With `NEXT_PUBLIC_APP_ENV=production` it is a **gate**: it
+  exits non-zero on placeholder content in rendered output, a missing or
+  non-https site URL, missing Supabase/mail configuration, or a service-role key
+  exposed through a `NEXT_PUBLIC_` variable.
+- The scan covers `.html` and `.rsc` output only. JavaScript chunks legitimately
+  contain the marker string — it is the constant the placeholder system is built
+  from, and the admin dashboard explains it in prose — so scanning them produced
+  a false positive that was fixed.
+- **Verified end to end**: a production build renders zero placeholders, and
+  injecting one into the build output makes the gate exit 1.
+- `docs/LAUNCH.md` carries the full checklist, including the content the company
+  must supply and the features that are deliberately absent.
+
 ---
 
 ## Key decisions
@@ -278,6 +293,26 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 12 — Launch readiness: the pre-launch checklist, a content-integrity
-guard that fails the build if placeholder content would ship, and final
-verification.
+All twelve phases are delivered. The site is structurally complete and cannot
+launch with placeholder content, but it is **not launchable yet** because no
+client business data exists. The next work is data entry and verification, not
+development:
+
+1. Provision Supabase and apply `supabase/migrations` in filename order.
+2. Create a `super_admin` row in `admin_users`.
+3. Populate `site_settings` (legal name, CIN, GST, licence, addresses, contacts,
+   founding year), then products, certificates, people, facilities and network
+   coverage.
+4. Have the client's legal adviser approve the four legal documents.
+5. Work through `docs/LAUNCH.md` and run `npm run verify` with
+   `NEXT_PUBLIC_APP_ENV=production`.
+
+Development still outstanding (all follow patterns already established in the
+codebase, none blocking launch of the public site):
+
+- Admin CRUD forms for certificates, people, facilities, network coverage,
+  articles, gallery, downloads and events. Publishing and role enforcement
+  already exist; these entities are currently populated through Supabase Studio
+  rather than a bespoke form.
+- Rate limiting is in-process; move it to a shared store if the site is
+  deployed across multiple instances.
