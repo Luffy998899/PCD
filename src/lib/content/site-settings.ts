@@ -24,6 +24,8 @@ const EMPTY_SETTINGS: SiteSettings = {
   grievance_officer_email: null,
   grievance_officer_phone: null,
   logo_url: null,
+  product_catalogue_url: null,
+  product_catalogue_updated_on: null,
 }
 
 /**

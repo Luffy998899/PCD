@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+import Link from 'next/link'
+
 import { SiteFooter } from '@/components/layout/footer'
 import { SiteHeader } from '@/components/layout/header'
 import { LinkButton } from '@/components/ui/button'
@@ -35,24 +37,24 @@ export default function NotFound() {
             </div>
             <ul className="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm">
               <li>
-                <a className="text-primary underline underline-offset-4" href="/products">
+                <Link className="text-primary underline underline-offset-4" href="/products">
                   Products
-                </a>
+                </Link>
               </li>
               <li>
-                <a className="text-primary underline underline-offset-4" href="/science-quality">
+                <Link className="text-primary underline underline-offset-4" href="/science-quality">
                   Science &amp; Quality
-                </a>
+                </Link>
               </li>
               <li>
-                <a className="text-primary underline underline-offset-4" href="/about">
+                <Link className="text-primary underline underline-offset-4" href="/about">
                   About us
-                </a>
+                </Link>
               </li>
               <li>
-                <a className="text-primary underline underline-offset-4" href="/sitemap">
+                <Link className="text-primary underline underline-offset-4" href="/sitemap">
                   Sitemap
-                </a>
+                </Link>
               </li>
             </ul>
           </Container>

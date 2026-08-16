@@ -48,6 +48,8 @@ export type SiteSettingsRow = {
   grievance_officer_email: string | null
   grievance_officer_phone: string | null
   logo_url: string | null
+  product_catalogue_url: string | null
+  product_catalogue_updated_on: string | null
   updated_at: string
 }
 
@@ -310,6 +312,103 @@ export type PharmacovigilanceReportInsert = Omit<
   'id' | 'created_at' | 'status' | 'internal_notes'
 >
 
+// ---------------------------------------------------------------------------
+// Phase 4 — Products
+// ---------------------------------------------------------------------------
+
+export type DivisionRow = {
+  id: string
+  name: string
+  slug: string
+  summary: string | null
+  description: string | null
+  hero_image_url: string | null
+  hero_image_alt: string | null
+  display_order: number
+  status: PublishStatus
+  seo_title: string | null
+  seo_description: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type TherapyRow = {
+  id: string
+  name: string
+  slug: string
+  summary: string | null
+  description: string | null
+  display_order: number
+  status: PublishStatus
+  seo_title: string | null
+  seo_description: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type DosageFormRow = {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+  display_order: number
+  status: PublishStatus
+  created_at: string
+}
+
+export type ProductRow = {
+  id: string
+  brand_name: string
+  slug: string
+  generic_composition: string
+  strength: string | null
+  pack_size: string | null
+  therapy_id: string | null
+  division_id: string | null
+  dosage_form_id: string | null
+  summary: string | null
+  indications: string | null
+  directions: string | null
+  warnings: string | null
+  contraindications: string | null
+  side_effects: string | null
+  storage: string | null
+  manufactured_by: string | null
+  marketed_by: string | null
+  licence_number: string | null
+  prescribing_information_url: string | null
+  is_prescription_only: boolean
+  status: PublishStatus
+  seo_title: string | null
+  seo_description: string | null
+  source_reference: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type ProductImageRow = {
+  id: string
+  product_id: string
+  image_url: string
+  alt_text: string
+  image_type: 'pack_front' | 'pack_back' | 'label' | 'other'
+  display_order: number
+  created_at: string
+}
+
+export type ProductDocumentRow = {
+  id: string
+  product_id: string
+  title: string
+  document_url: string
+  document_type: 'prescribing_information' | 'coa' | 'leaflet' | 'other'
+  display_order: number
+  status: PublishStatus
+  created_at: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -331,6 +430,12 @@ export type Database = {
         PharmacovigilanceReportRow,
         PharmacovigilanceReportInsert
       >
+      divisions: TableDef<DivisionRow>
+      therapies: TableDef<TherapyRow>
+      dosage_forms: TableDef<DosageFormRow>
+      products: TableDef<ProductRow>
+      product_images: TableDef<ProductImageRow>
+      product_documents: TableDef<ProductDocumentRow>
     }
     Views: Record<never, never>
     Functions: Record<never, never>

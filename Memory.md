@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 3 complete — Phase 4 next |
+| **Active phase** | Phase 4 complete — Phase 5 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -80,6 +80,24 @@ Updated at the end of every phase (Rules.md §24).
   enquiries: different retention, different access, different workflow. The
   narrative is never logged and never included in notification email.
 
+### Phase 4 — Products & Product Catalogue
+- Migration `0004_products.sql`: `divisions`, `therapies`, `dosage_forms`,
+  `products`, `product_images`, `product_documents`, plus catalogue columns on
+  `site_settings`.
+- Image and document read policies check the parent product's status, so assets
+  of a draft product are not reachable before it is published.
+- Listing filters and search run in the database via a plain GET form: no
+  client JavaScript required, every filter combination has a shareable URL, and
+  results are crawlable. An unknown filter slug returns nothing rather than
+  everything.
+- Product detail page renders only the prescribing sections that have approved
+  content, plus manufacturing details, documents, safety statement and an
+  in-page product enquiry carrying product context.
+- `Product` schema is emitted with no price, offer or availability — the site is
+  not a storefront.
+- `/sitemap.xml` and `/robots.ts`: robots disallows everything unless
+  `NEXT_PUBLIC_APP_ENV=production`, so staging cannot be indexed.
+
 ---
 
 ## Key decisions
@@ -135,6 +153,6 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 4 — Products & product catalogue: product schema, therapies, divisions,
-dosage forms, listing with filters, product detail pages with prescribing
-information, product enquiry and Product schema.
+Phase 5 — Divisions & Partner With Us: division overview and detail pages, and
+the PCD partner experience as a qualification workflow (no ROI calculator, no
+territory checker, no availability claims).
