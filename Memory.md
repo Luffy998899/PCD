@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 8 complete — Phase 9 next |
+| **Active phase** | Phase 9 complete — Phase 10 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -160,6 +160,22 @@ Updated at the end of every phase (Rules.md §24).
   "this role is closed" panel.
 - Applications are insert-only for the public; there is no public select policy.
 
+### Phase 9 — Homepage Assembly
+- Migration `0008_home.sql`: `founded_year` on `site_settings`, plus
+  `memberships` and `testimonials`.
+- A testimonial is readable only when `consent_on_file` is true — consent is
+  part of the RLS read condition, not an admin convention — and always carries
+  the person's name.
+- Snapshot figures are derived: years in operation from the founding year,
+  products counted from the catalogue, coverage counted from network rows. A
+  figure with no underlying data is omitted, and none animate.
+- Every homepage section returns `null` when its records do not exist, so the
+  page never shows empty scaffolding.
+- Hero is company-first with exactly two buttons; WhatsApp is a secondary text
+  affordance. Each section has at most one primary button.
+- The enquiry strip gives business and product/medical enquiries equal weight.
+- Organization schema is emitted only once the company's real identity is known.
+
 ---
 
 ## Key decisions
@@ -215,5 +231,6 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 9 — Homepage assembly: compose the homepage from content already verified
-on the inner pages, in the section order set by PRD §7.
+Phase 10 — SEO, analytics, accessibility and performance hardening: GA4 behind
+cookie consent, remaining schema helpers, Open Graph coverage, image and font
+optimisation, accessibility and performance passes.

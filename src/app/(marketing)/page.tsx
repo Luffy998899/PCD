@@ -1,45 +1,114 @@
 import type { Metadata } from 'next'
 
-import { buildMetadata } from '@/lib/seo/metadata'
-import { Container, Section, SectionHeader } from '@/components/ui/layout'
-import { LinkButton } from '@/components/ui/button'
-import { DevNote } from '@/components/ui/pending'
+import { buildCanonicalUrl, buildMetadata } from '@/lib/seo/metadata'
+import { displayName, getSiteSettings } from '@/lib/content/site-settings'
+import { withoutPlaceholder } from '@/lib/content/placeholder'
+import { compact } from '@/lib/utils'
+import { JsonLd } from '@/components/seo/json-ld'
+import { HomeHero, HomeSnapshot } from '@/components/sections/home/hero'
+import {
+  HomeAbout,
+  HomeCertifications,
+  HomeLeadership,
+  HomeNetwork,
+  HomePartners,
+  HomeScience,
+} from '@/components/sections/home/authority'
+import {
+  HomeCareers,
+  HomeDivisions,
+  HomeEnquiryStrip,
+  HomeNews,
+  HomeTherapies,
+} from '@/components/sections/home/engagement'
 
 export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  const name = withoutPlaceholder(displayName(settings))
+
   return buildMetadata({
-    title: 'Pharmaceutical manufacturing, distribution and PCD franchise',
+    title: name
+      ? `${name} — pharmaceutical manufacturing and distribution`
+      : 'Pharmaceutical manufacturing and distribution',
     description:
-      'Company overview, product portfolio, manufacturing and quality information, network coverage and enquiry routes.',
+      withoutPlaceholder(settings.short_description) ??
+      'Product portfolio, manufacturing and quality information, network coverage and enquiry routes.',
     path: '/',
   })
 }
 
 /**
- * Homepage shell.
+ * Homepage (PRD §7, Phases.md §9).
  *
- * The homepage is assembled last (Phases.md §9) from content validated on the
- * inner pages. Until then it carries only navigation into the sections that
- * exist.
+ * Assembled last, from content already verified on the inner pages. Each
+ * section renders only when its records exist, so the page tells one coherent
+ * story rather than showing empty scaffolding.
+ *
+ * Section order follows the PRD: hero → snapshot → about → divisions →
+ * therapies → science → certifications → network → leadership → partners →
+ * news → careers → enquiry strip.
  */
-export default function HomePage() {
+export default async function HomePage() {
+  const settings = await getSiteSettings()
+  const name = withoutPlaceholder(displayName(settings))
+
+  // Organization schema is emitted only once the company's real identity is
+  // known (Rules.md §19).
+  const organisationSchema = name
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name,
+        url: buildCanonicalUrl('/'),
+        ...(withoutPlaceholder(settings.legal_name)
+          ? { legalName: settings.legal_name }
+          : {}),
+        ...(withoutPlaceholder(settings.short_description)
+          ? { description: settings.short_description }
+          : {}),
+        ...(settings.logo_url ? { logo: settings.logo_url } : {}),
+        ...(settings.registered_address
+          ? {
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: settings.registered_address,
+                addressCountry: 'IN',
+              },
+            }
+          : {}),
+        ...(settings.primary_phone || settings.primary_email
+          ? {
+              contactPoint: compact([
+                settings.primary_phone
+                  ? {
+                      '@type': 'ContactPoint',
+                      contactType: 'customer service',
+                      telephone: settings.primary_phone,
+                      email: settings.primary_email ?? undefined,
+                    }
+                  : null,
+              ]),
+            }
+          : {}),
+      }
+    : null
+
   return (
-    <Section>
-      <Container className="flex flex-col gap-8">
-        <SectionHeader
-          as="h1"
-          title="Company website"
-          description="This homepage is assembled in the final build phase from content that has been verified on the inner pages."
-        />
-        <DevNote>
-          The homepage is composed in Phase 9 from content verified on the inner pages.
-        </DevNote>
-        <div className="flex flex-wrap gap-3">
-          <LinkButton href="/products">Find products</LinkButton>
-          <LinkButton href="/contact" variant="outline">
-            Send an enquiry
-          </LinkButton>
-        </div>
-      </Container>
-    </Section>
+    <>
+      <JsonLd data={organisationSchema} />
+      <HomeHero />
+      <HomeSnapshot />
+      <HomeAbout />
+      <HomeDivisions />
+      <HomeTherapies />
+      <HomeScience />
+      <HomeCertifications />
+      <HomeNetwork />
+      <HomeLeadership />
+      <HomePartners />
+      <HomeNews />
+      <HomeCareers />
+      <HomeEnquiryStrip />
+    </>
   )
 }

@@ -48,6 +48,7 @@ export type SiteSettingsRow = {
   grievance_officer_email: string | null
   grievance_officer_phone: string | null
   logo_url: string | null
+  founded_year: number | null
   product_catalogue_url: string | null
   product_catalogue_updated_on: string | null
   updated_at: string
@@ -615,6 +616,43 @@ export type JobApplicationInsert = Omit<
   'id' | 'created_at' | 'status' | 'internal_notes'
 >
 
+// ---------------------------------------------------------------------------
+// Phase 9 — Homepage
+// ---------------------------------------------------------------------------
+
+export type MembershipRow = {
+  id: string
+  name: string
+  membership_number: string | null
+  since_year: number | null
+  logo_url: string | null
+  logo_alt: string | null
+  website_url: string | null
+  display_order: number
+  status: PublishStatus
+  source_reference: string | null
+  source_document_url: string | null
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+}
+
+export type TestimonialRow = {
+  id: string
+  quote: string
+  author_name: string
+  author_designation: string | null
+  organisation: string | null
+  city: string | null
+  consent_on_file: boolean
+  consent_recorded_on: string | null
+  display_order: number
+  status: PublishStatus
+  verified_by: string | null
+  verified_at: string | null
+  created_at: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -653,6 +691,8 @@ export type Database = {
       events: TableDef<EventRow>
       job_openings: TableDef<JobOpeningRow>
       job_applications: TableDef<JobApplicationRow, JobApplicationInsert>
+      memberships: TableDef<MembershipRow>
+      testimonials: TableDef<TestimonialRow>
     }
     Views: Record<never, never>
     Functions: Record<never, never>
