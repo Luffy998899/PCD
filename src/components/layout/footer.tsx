@@ -8,6 +8,7 @@ import { whatsappLink } from '@/lib/env'
 import { Container } from '@/components/ui/layout'
 import { Logo } from '@/components/layout/logo'
 import { Pending } from '@/components/ui/pending'
+import { CookieSettingsButton } from '@/components/layout/cookie-consent'
 
 function StatutoryRow({ label, value }: { label: string; value: string | null }) {
   return (
@@ -136,6 +137,9 @@ export async function SiteFooter() {
                 </Link>
               </li>
             ))}
+            <li>
+              <CookieSettingsButton className="text-sm text-primary-foreground/70 underline-offset-4 transition-colors duration-200 hover:text-primary-foreground hover:underline" />
+            </li>
           </ul>
         </Container>
       </div>

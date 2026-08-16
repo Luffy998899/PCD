@@ -9,7 +9,7 @@ Updated at the end of every phase (Rules.md §24).
 
 | | |
 |---|---|
-| **Active phase** | Phase 0 complete — Phase 1 next |
+| **Active phase** | Phase 1 complete — Phase 2 next |
 | **App state** | Boots, builds clean, no TypeScript or lint errors |
 | **Database** | Not provisioned. All reads degrade to empty state. |
 
@@ -31,6 +31,26 @@ Updated at the end of every phase (Rules.md §24).
 - `.env.example` covering app, Supabase, mail, analytics and WhatsApp configuration.
 - Supabase server/service/browser client factories.
 - `buildMetadata()` / `buildCanonicalUrl()` SEO helpers.
+
+### Phase 1 — Legal, Core Infrastructure & Contact
+- Migration `0001_foundation.sql`: `site_settings` (single row), `offices`,
+  `department_contacts`, `enquiries`, with RLS enabled on all four. Visitors can
+  insert an enquiry and never select one.
+- Enquiry system: Zod schemas shared by client and server, a single
+  `submitEnquiry` server action (validate → anti-spam → rate limit → insert →
+  notify), honeypot + submit-timing checks, in-process rate limiter.
+- One reusable `EnquiryForm` driving all variants; accessible field primitives
+  with visible labels, required markers and associated errors.
+- Mail service over the provider's HTTP API. Delivery failure never discards a
+  persisted enquiry; adverse-event narratives are excluded from notification
+  email and read in the admin instead.
+- Legal pages: Privacy Policy, Terms of Use, Disclaimer, Anti-Counterfeit Notice
+  in `src/data/legal.ts`, with `{{token}}` substitution from `site_settings`.
+- Human-readable `/sitemap`, contact hub with equal-weight enquiry routes,
+  business / product / grievance enquiry pages.
+- Cookie consent via `useSyncExternalStore` (analytics opt-in, reopenable from
+  the footer).
+- `Breadcrumbs` with BreadcrumbList schema, `PageHero`, `JsonLd`, `DevNote`.
 
 ---
 
@@ -58,7 +78,18 @@ Updated at the end of every phase (Rules.md §24).
 5. **One button component, one card component.** Variants are handled by
    `class-variance-authority`, not by parallel component names (Rules.md §11).
 
-6. **No company facts are invented.** There is no client-supplied data yet, so
+6. **Legal copy describes real site behaviour.** The legal documents state what
+   this website actually does — which fields the forms collect, where data is
+   stored, which cookies are set — because that is verifiable from the code.
+   Company-specific facts are tokens that resolve from `site_settings`, and each
+   document carries a development-only reminder that the client's legal adviser
+   must approve it.
+
+7. **`DevNote` is separate from `Pending`.** A build-team reminder is not a
+   missing client fact; conflating them would have produced misleading
+   `[CLIENT TO PROVIDE]` markers.
+
+8. **No company facts are invented.** There is no client-supplied data yet, so
    company name, addresses, CIN/GST/licence numbers, statistics, products,
    people and certificates all render as placeholders or empty states.
 
@@ -76,6 +107,6 @@ Updated at the end of every phase (Rules.md §24).
 
 ## Next step
 
-Phase 1 — Legal, core infrastructure and contact: legal routes, contact page,
-enquiry schema and forms (general / business / product), cookie consent,
-rate limiting and mail notifications.
+Phase 2 — About & corporate authority: company overview, vision & mission,
+chairman's message, board, leadership, milestones, values and awards, backed by
+a `people` content model with reusable profile components.
