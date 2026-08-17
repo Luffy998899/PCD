@@ -1,6 +1,8 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import { demoJobOpenings } from '@/data/demo/records'
 import type { JobOpeningRow } from '@/types/database'
 
 export type JobOpening = JobOpeningRow
@@ -20,6 +22,7 @@ export const EMPLOYMENT_TYPE_LABELS: Record<JobOpening['employment_type'], strin
  * disables the application form instead (Rules.md §22).
  */
 export const getJobOpenings = cache(async (): Promise<JobOpening[]> => {
+  if (isDemoMode()) return demoJobOpenings
   const db = await getServerClient()
   if (!db) return []
 

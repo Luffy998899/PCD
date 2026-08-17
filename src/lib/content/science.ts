@@ -1,6 +1,14 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import {
+  demoCertificates,
+  demoFacilities,
+  demoFacilitySpecs,
+  demoQualityTests,
+  demoRegulatoryItems,
+} from '@/data/demo/records'
 import type {
   CertificateRow,
   FacilityRow,
@@ -24,6 +32,13 @@ export type FacilityWithSpecs = Facility & { specs: FacilitySpec[] }
  * evidence. Nothing is inferred or filled in (Rules.md §1).
  */
 export const getFacilities = cache(async (): Promise<FacilityWithSpecs[]> => {
+  if (isDemoMode()) {
+    return demoFacilities.map((facility) => ({
+      ...facility,
+      specs: demoFacilitySpecs.filter((spec) => spec.facility_id === facility.id),
+    }))
+  }
+
   const db = await getServerClient()
   if (!db) return []
 
@@ -53,6 +68,12 @@ export const getFacilities = cache(async (): Promise<FacilityWithSpecs[]> => {
 
 export const getCertificates = cache(
   async (category?: CertificateRow['category']): Promise<Certificate[]> => {
+    if (isDemoMode()) {
+      return category
+        ? demoCertificates.filter((certificate) => certificate.category === category)
+        : demoCertificates
+    }
+
     const db = await getServerClient()
     if (!db) return []
 
@@ -71,6 +92,7 @@ export const getCertificates = cache(
 )
 
 export const getQualityTests = cache(async (): Promise<QualityTest[]> => {
+  if (isDemoMode()) return demoQualityTests
   const db = await getServerClient()
   if (!db) return []
 
@@ -85,6 +107,7 @@ export const getQualityTests = cache(async (): Promise<QualityTest[]> => {
 })
 
 export const getRegulatoryItems = cache(async (): Promise<RegulatoryItem[]> => {
+  if (isDemoMode()) return demoRegulatoryItems
   const db = await getServerClient()
   if (!db) return []
 

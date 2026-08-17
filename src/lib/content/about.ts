@@ -1,6 +1,8 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import { demoAwards, demoMilestones, demoPeople, demoValues } from '@/data/demo/records'
 import type {
   AwardRow,
   CoreValueRow,
@@ -16,6 +18,10 @@ export type Award = AwardRow
 
 /** Published people, optionally filtered to a category. */
 export const getPeople = cache(async (category?: PersonCategory): Promise<Person[]> => {
+  if (isDemoMode()) {
+    return category ? demoPeople.filter((p) => p.category === category) : demoPeople
+  }
+
   const db = await getServerClient()
   if (!db) return []
 
@@ -47,6 +53,7 @@ export const getFounderMessage = cache(async (): Promise<Person | null> => {
 })
 
 export const getMilestones = cache(async (): Promise<Milestone[]> => {
+  if (isDemoMode()) return [...demoMilestones].sort((a, b) => b.year - a.year)
   const db = await getServerClient()
   if (!db) return []
 
@@ -62,6 +69,7 @@ export const getMilestones = cache(async (): Promise<Milestone[]> => {
 })
 
 export const getCoreValues = cache(async (): Promise<CoreValue[]> => {
+  if (isDemoMode()) return demoValues
   const db = await getServerClient()
   if (!db) return []
 
@@ -76,6 +84,7 @@ export const getCoreValues = cache(async (): Promise<CoreValue[]> => {
 })
 
 export const getAwards = cache(async (): Promise<Award[]> => {
+  if (isDemoMode()) return demoAwards
   const db = await getServerClient()
   if (!db) return []
 

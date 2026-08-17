@@ -1,6 +1,8 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import { demoSiteSettings } from '@/data/demo/records'
 import type { SiteSettingsRow } from '@/types/database'
 
 export type SiteSettings = Omit<SiteSettingsRow, 'id' | 'updated_at'>
@@ -39,6 +41,11 @@ const EMPTY_SETTINGS: SiteSettings = {
  * `cache` de-duplicates the read within a single request.
  */
 export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
+  if (isDemoMode()) {
+    const { id: _id, updated_at: _updatedAt, ...settings } = demoSiteSettings
+    return settings
+  }
+
   const db = await getServerClient()
   if (!db) return EMPTY_SETTINGS
 

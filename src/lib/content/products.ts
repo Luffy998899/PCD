@@ -1,6 +1,14 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import {
+  demoDivisions,
+  demoDosageForms,
+  demoProductImages,
+  demoProducts,
+  demoTherapies,
+} from '@/data/demo/records'
 import type {
   DivisionRow,
   DosageFormRow,
@@ -33,6 +41,7 @@ export type ProductDetail = Product & {
 export const PRODUCTS_PER_PAGE = 24
 
 export const getDivisions = cache(async (): Promise<Division[]> => {
+  if (isDemoMode()) return demoDivisions
   const db = await getServerClient()
   if (!db) return []
   const { data } = await db
@@ -44,6 +53,7 @@ export const getDivisions = cache(async (): Promise<Division[]> => {
 })
 
 export const getTherapies = cache(async (): Promise<Therapy[]> => {
+  if (isDemoMode()) return demoTherapies
   const db = await getServerClient()
   if (!db) return []
   const { data } = await db
@@ -55,6 +65,7 @@ export const getTherapies = cache(async (): Promise<Therapy[]> => {
 })
 
 export const getDosageForms = cache(async (): Promise<DosageForm[]> => {
+  if (isDemoMode()) return demoDosageForms
   const db = await getServerClient()
   if (!db) return []
   const { data } = await db
@@ -125,6 +136,9 @@ export type ProductListResult = {
  */
 export async function listProducts(filters: ProductFilters = {}): Promise<ProductListResult> {
   const page = Math.max(1, filters.page ?? 1)
+
+  if (isDemoMode()) return listDemoProducts(filters, page)
+
   const db = await getServerClient()
   if (!db) return { products: [], total: 0, page, pageCount: 0 }
 
@@ -189,6 +203,17 @@ export async function listProducts(filters: ProductFilters = {}): Promise<Produc
 }
 
 export const getProductBySlug = cache(async (slug: string): Promise<ProductDetail | null> => {
+  if (isDemoMode()) {
+    const product = demoProducts.find((entry) => entry.slug === slug)
+    if (!product) return null
+    return {
+      ...product,
+      ...demoTaxonomyRefs(product),
+      images: demoProductImages.filter((image) => image.product_id === product.id),
+      documents: [],
+    }
+  }
+
   const db = await getServerClient()
   if (!db) return null
 
@@ -231,6 +256,13 @@ export const getProductBySlug = cache(async (slug: string): Promise<ProductDetai
 /** Slugs and update times for the XML sitemap. */
 export const getPublishedProductRefs = cache(
   async (): Promise<{ slug: string; updated_at: string }[]> => {
+    if (isDemoMode()) {
+      return demoProducts.map((product) => ({
+        slug: product.slug,
+        updated_at: product.updated_at,
+      }))
+    }
+
     const db = await getServerClient()
     if (!db) return []
     const { data } = await db
@@ -247,3 +279,73 @@ export const getProductsWithPrescribingInformation = cache(async (): Promise<Pro
   const { products } = await listProducts()
   return products.filter((product) => product.prescribing_information_url)
 })
+
+// ---------------------------------------------------------------------------
+// Demo mode
+// ---------------------------------------------------------------------------
+
+/** Resolves a demo product's taxonomy names the same way the database path does. */
+function demoTaxonomyRefs(product: ProductRow): {
+  therapy: TaxonomyRef
+  division: TaxonomyRef
+  dosageForm: TaxonomyRef
+} {
+  const therapy = demoTherapies.find((entry) => entry.id === product.therapy_id)
+  const division = demoDivisions.find((entry) => entry.id === product.division_id)
+  const dosageForm = demoDosageForms.find((entry) => entry.id === product.dosage_form_id)
+  return {
+    therapy: toRef(therapy),
+    division: toRef(division),
+    dosageForm: toRef(dosageForm),
+  }
+}
+
+/**
+ * In-memory equivalent of the database query, including the rule that an
+ * unknown filter slug matches nothing rather than everything.
+ */
+function listDemoProducts(filters: ProductFilters, page: number): ProductListResult {
+  const therapy = filters.therapy
+    ? demoTherapies.find((entry) => entry.slug === filters.therapy)
+    : undefined
+  const division = filters.division
+    ? demoDivisions.find((entry) => entry.slug === filters.division)
+    : undefined
+  const dosageForm = filters.dosageForm
+    ? demoDosageForms.find((entry) => entry.slug === filters.dosageForm)
+    : undefined
+
+  if (
+    (filters.therapy && !therapy) ||
+    (filters.division && !division) ||
+    (filters.dosageForm && !dosageForm)
+  ) {
+    return { products: [], total: 0, page, pageCount: 0 }
+  }
+
+  const search = filters.query?.trim().toLowerCase()
+
+  const matched = demoProducts
+    .filter((product) => !therapy || product.therapy_id === therapy.id)
+    .filter((product) => !division || product.division_id === division.id)
+    .filter((product) => !dosageForm || product.dosage_form_id === dosageForm.id)
+    .filter(
+      (product) =>
+        !search ||
+        product.brand_name.toLowerCase().includes(search) ||
+        product.generic_composition.toLowerCase().includes(search),
+    )
+    .sort((a, b) => a.brand_name.localeCompare(b.brand_name))
+
+  const from = (page - 1) * PRODUCTS_PER_PAGE
+  const products: Product[] = matched
+    .slice(from, from + PRODUCTS_PER_PAGE)
+    .map((product) => ({ ...product, ...demoTaxonomyRefs(product) }))
+
+  return {
+    products,
+    total: matched.length,
+    page,
+    pageCount: Math.max(1, Math.ceil(matched.length / PRODUCTS_PER_PAGE)),
+  }
+}

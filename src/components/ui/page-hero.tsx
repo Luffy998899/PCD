@@ -23,8 +23,11 @@ export function PageHero({
   children?: React.ReactNode
 }) {
   return (
-    <div className="border-b border-primary-dark/40 bg-primary text-primary-foreground">
-      <Container className="py-10 md:py-14">
+    <div className="relative overflow-hidden border-b border-primary-dark/40 bg-primary text-primary-foreground">
+      {/* Same blister motif as the hero proof card, so inner pages read as part
+          of one system rather than a different template. */}
+      <div className="blister pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
+      <Container className="relative py-12 md:py-16">
         <Breadcrumbs items={breadcrumbs} tone="inverse" className="mb-6" />
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
@@ -33,7 +36,13 @@ export function PageHero({
                 {eyebrow}
               </p>
             ) : null}
-            <h1 className="text-[2rem] leading-tight sm:text-h1">{title}</h1>
+            <h1 className="text-[2rem] leading-tight font-semibold tracking-tight sm:text-h1">
+              {title}
+            </h1>
+            <span
+              aria-hidden="true"
+              className="mt-5 block h-0.5 w-10 bg-accent-strong"
+            />
             {description ? (
               <p className="mt-4 text-primary-foreground/80 md:text-body-lg">{description}</p>
             ) : null}

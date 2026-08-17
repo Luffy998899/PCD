@@ -65,6 +65,13 @@ check(isSet('NEXT_PUBLIC_WHATSAPP_NUMBER'), 'Official WhatsApp number is configu
   fatal: false,
 })
 
+// Demo mode is already impossible in production, but a build configured with
+// the flag set signals a misconfigured environment worth failing on.
+check(
+  process.env.NEXT_PUBLIC_DEMO_MODE?.trim() !== '1',
+  'Demo mode is off (NEXT_PUBLIC_DEMO_MODE is not "1")',
+)
+
 // The service role key must never be exposed to the browser.
 const publicServiceKey = Object.keys(process.env).some(
   (key) => key.startsWith('NEXT_PUBLIC_') && /SERVICE_ROLE/i.test(key),

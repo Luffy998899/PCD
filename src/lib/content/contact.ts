@@ -1,6 +1,8 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import { demoDepartments, demoOffices } from '@/data/demo/records'
 import type { DepartmentContactRow, OfficeRow } from '@/types/database'
 
 export type Office = OfficeRow
@@ -12,6 +14,7 @@ export type DepartmentContact = DepartmentContactRow
  * an empty state instead of invented addresses (Rules.md §1).
  */
 export const getOffices = cache(async (): Promise<Office[]> => {
+  if (isDemoMode()) return demoOffices
   const db = await getServerClient()
   if (!db) return []
 
@@ -26,6 +29,7 @@ export const getOffices = cache(async (): Promise<Office[]> => {
 })
 
 export const getDepartmentContacts = cache(async (): Promise<DepartmentContact[]> => {
+  if (isDemoMode()) return demoDepartments
   const db = await getServerClient()
   if (!db) return []
 

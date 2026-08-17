@@ -32,11 +32,14 @@ export default async function Page() {
       <Section>
         <Container>
           {people.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {people.map((person) => (
-                <PeopleCard key={person.id} person={person} />
-              ))}
-            </div>
+            <>
+              <h2 className="sr-only">Leadership team</h2>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {people.map((person) => (
+                  <PeopleCard key={person.id} person={person} />
+                ))}
+              </div>
+            </>
           ) : (
             <EmptyState
               title="Leadership profiles are being prepared"

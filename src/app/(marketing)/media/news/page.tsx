@@ -33,13 +33,16 @@ export default async function Page() {
       <Section>
         <Container>
           {articles.length > 0 ? (
-            <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <>
+              <h2 className="sr-only">News items</h2>
+              <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((article) => (
                 <li key={article.id} className="flex">
                   <ArticleCard article={article} href={`/media/news/${article.slug}`} />
                 </li>
               ))}
             </ul>
+          </>
           ) : (
             <EmptyState
               title="No news published yet"

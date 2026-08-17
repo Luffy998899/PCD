@@ -1,6 +1,8 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import { demoMemberships, demoTestimonials } from '@/data/demo/records'
 import { getSiteSettings } from '@/lib/content/site-settings'
 import { getNetworkCounts } from '@/lib/content/network'
 import { listProducts } from '@/lib/content/products'
@@ -10,6 +12,7 @@ export type Membership = MembershipRow
 export type Testimonial = TestimonialRow
 
 export const getMemberships = cache(async (): Promise<Membership[]> => {
+  if (isDemoMode()) return demoMemberships
   const db = await getServerClient()
   if (!db) return []
   const { data } = await db
@@ -21,6 +24,7 @@ export const getMemberships = cache(async (): Promise<Membership[]> => {
 })
 
 export const getTestimonials = cache(async (): Promise<Testimonial[]> => {
+  if (isDemoMode()) return demoTestimonials
   const db = await getServerClient()
   if (!db) return []
   const { data } = await db

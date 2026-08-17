@@ -1,6 +1,8 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import { demoContentBlocks } from '@/data/demo/records'
 import type { ContentBlockRow } from '@/types/database'
 
 export type ContentBlock = ContentBlockRow
@@ -12,6 +14,12 @@ export type ContentBlock = ContentBlockRow
  * does. They never substitute sample copy.
  */
 export const getContentBlocks = cache(async (pageKey: string): Promise<ContentBlock[]> => {
+  if (isDemoMode()) {
+    return demoContentBlocks
+      .filter((block) => block.page_key === pageKey)
+      .sort((a, b) => a.display_order - b.display_order)
+  }
+
   const db = await getServerClient()
   if (!db) return []
 

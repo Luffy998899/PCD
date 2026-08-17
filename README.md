@@ -58,6 +58,34 @@ from page metadata, structured data and outbound email.
 
 Set `NEXT_PUBLIC_APP_ENV=production` for any public deployment.
 
+## Demo mode
+
+To see every page filled in before real content exists:
+
+```bash
+echo "NEXT_PUBLIC_DEMO_MODE=1" >> .env.local
+npm run dev
+```
+
+This populates the whole site from a fictional company — Nirvaan Lifesciences —
+with 16 products across 6 therapies, 2 manufacturing units with technical
+tables, 5 certificates (one deliberately expired, to show how a lapsed
+certificate is presented), 19 states and 49 districts of coverage, 8 export
+markets, leadership and board profiles, articles, jobs and testimonials.
+
+Two things make it safe:
+
+- **It cannot be enabled in production.** `NEXT_PUBLIC_APP_ENV=production`
+  short-circuits the check regardless of the flag, and `npm run check:launch`
+  fails a production build that has the flag set.
+- **It is obviously fictional.** Registration numbers are prefixed `DEMO-`,
+  and a banner sits above every page while the mode is on.
+
+Imagery is abstract SVG in `public/demo/`, labelled as illustrative. Photographs
+of facilities, people or packs are never generated — a demo asset that looks
+like a real photograph is the one most likely to reach production by accident
+(`Rules.md` §14).
+
 ## Troubleshooting
 
 ### `Cannot find native binding` / `Cannot find module '@tailwindcss/oxide-*'`

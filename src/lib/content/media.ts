@@ -1,6 +1,14 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import {
+  demoArticleCategories,
+  demoArticles,
+  demoDownloads,
+  demoEvents,
+  demoGallery,
+} from '@/data/demo/records'
 import type {
   ArticleCategoryRow,
   ArticleRow,
@@ -40,6 +48,8 @@ async function loadArticles(
   type: ArticleType | undefined,
   limit?: number,
 ): Promise<Article[]> {
+  if (isDemoMode()) return loadDemoArticles(type, limit)
+
   const db = await getServerClient()
   if (!db) return []
 
@@ -68,6 +78,7 @@ async function loadArticles(
 }
 
 export const getArticleCategories = cache(async (): Promise<ArticleCategory[]> => {
+  if (isDemoMode()) return demoArticleCategories
   const db = await getServerClient()
   if (!db) return []
   const { data } = await db
@@ -83,6 +94,10 @@ export const getArticles = cache(
 )
 
 export const getArticleBySlug = cache(async (slug: string): Promise<Article | null> => {
+  if (isDemoMode()) {
+    return loadDemoArticles(undefined).find((article) => article.slug === slug) ?? null
+  }
+
   const db = await getServerClient()
   if (!db) return null
 
@@ -121,6 +136,7 @@ export const getPublishedArticleRefs = cache(
 )
 
 export const getGalleryItems = cache(async (): Promise<GalleryItem[]> => {
+  if (isDemoMode()) return demoGallery
   const db = await getServerClient()
   if (!db) return []
   const { data } = await db
@@ -132,6 +148,7 @@ export const getGalleryItems = cache(async (): Promise<GalleryItem[]> => {
 })
 
 export const getDownloads = cache(async (): Promise<Download[]> => {
+  if (isDemoMode()) return demoDownloads
   const db = await getServerClient()
   if (!db) return []
   const { data } = await db
@@ -143,6 +160,7 @@ export const getDownloads = cache(async (): Promise<Download[]> => {
 })
 
 export const getEvents = cache(async (): Promise<CompanyEvent[]> => {
+  if (isDemoMode()) return demoEvents
   const db = await getServerClient()
   if (!db) return []
   const { data } = await db
@@ -152,3 +170,36 @@ export const getEvents = cache(async (): Promise<CompanyEvent[]> => {
     .order('starts_on', { ascending: false })
   return data ?? []
 })
+
+// ---------------------------------------------------------------------------
+// Demo mode
+// ---------------------------------------------------------------------------
+
+/**
+ * Demo equivalent of the published-article query. It applies the same two
+ * rules as the database policy — status must be `published` and `published_at`
+ * must already have passed — so the draft record in the demo set stays hidden.
+ */
+function loadDemoArticles(type: ArticleType | undefined, limit?: number): Article[] {
+  const now = Date.now()
+  const categories = new Map(demoArticleCategories.map((category) => [category.id, category]))
+
+  const articles = demoArticles
+    .filter((article) => article.status === 'published')
+    .filter((article) => article.published_at !== null)
+    .filter((article) => new Date(article.published_at!).getTime() <= now)
+    .filter((article) => !type || article.article_type === type)
+    .sort(
+      (a, b) => new Date(b.published_at!).getTime() - new Date(a.published_at!).getTime(),
+    )
+    .map((article) => {
+      const category = article.category_id ? categories.get(article.category_id) : undefined
+      return {
+        ...article,
+        category: category ? { name: category.name, slug: category.slug } : null,
+        authorName: article.author_name,
+      }
+    })
+
+  return limit ? articles.slice(0, limit) : articles
+}

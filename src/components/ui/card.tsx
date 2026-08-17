@@ -12,7 +12,7 @@ export function Card({
     <div
       className={cn(
         'rounded-md border border-border bg-surface',
-        interactive && 'transition-colors duration-200 hover:border-primary/40',
+        interactive && 'lift',
         className,
       )}
       {...props}

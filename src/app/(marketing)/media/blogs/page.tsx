@@ -73,13 +73,16 @@ export default async function BlogsPage({ searchParams }: { searchParams: Search
           ) : null}
 
           {filtered.length > 0 ? (
-            <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <>
+              <h2 className="sr-only">Articles</h2>
+              <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {filtered.map((article) => (
                 <li key={article.id} className="flex">
                   <ArticleCard article={article} href={`/media/blogs/${article.slug}`} />
                 </li>
               ))}
             </ul>
+          </>
           ) : (
             <EmptyState
               title={activeCategory ? 'No articles in this category yet' : 'No articles published yet'}

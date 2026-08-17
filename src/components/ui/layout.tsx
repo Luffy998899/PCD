@@ -75,7 +75,7 @@ export function SectionHeader({
       )}
     >
       {eyebrow ? (
-        <span className="text-xs font-semibold tracking-[0.14em] text-accent-strong uppercase">
+        <span className="rule-accent text-xs font-semibold tracking-[0.16em] text-accent-strong uppercase">
           {eyebrow}
         </span>
       ) : null}
@@ -83,8 +83,8 @@ export function SectionHeader({
         className={cn(
           'text-foreground',
           Heading === 'h1'
-            ? 'text-[2.125rem] leading-tight sm:text-h1'
-            : 'text-[1.75rem] leading-tight sm:text-h2',
+            ? 'text-[2.125rem] leading-tight tracking-tight sm:text-h1'
+            : 'text-[1.75rem] leading-tight tracking-tight sm:text-h2',
         )}
       >
         {title}

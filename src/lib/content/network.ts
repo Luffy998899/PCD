@@ -1,6 +1,13 @@
 import { cache } from 'react'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { isDemoMode } from '@/lib/demo'
+import {
+  demoNetworkCountries,
+  demoNetworkDistricts,
+  demoNetworkStates,
+  demoPartners,
+} from '@/data/demo/records'
 import type {
   NetworkCountryRow,
   NetworkDistrictRow,
@@ -20,6 +27,13 @@ export type Partner = PartnerRow & { stateName: string | null }
  * the underlying records do not support (Rules.md §7).
  */
 export const getIndiaCoverage = cache(async (): Promise<NetworkState[]> => {
+  if (isDemoMode()) {
+    return demoNetworkStates.map((state) => ({
+      ...state,
+      districts: demoNetworkDistricts.filter((district) => district.state_id === state.id),
+    }))
+  }
+
   const db = await getServerClient()
   if (!db) return []
 
@@ -49,6 +63,7 @@ export const getIndiaCoverage = cache(async (): Promise<NetworkState[]> => {
 })
 
 export const getGlobalCoverage = cache(async (): Promise<NetworkCountry[]> => {
+  if (isDemoMode()) return demoNetworkCountries
   const db = await getServerClient()
   if (!db) return []
 
@@ -71,6 +86,14 @@ export const getGlobalCoverage = cache(async (): Promise<NetworkCountry[]> => {
  * site too.
  */
 export const getPartners = cache(async (): Promise<Partner[]> => {
+  if (isDemoMode()) {
+    const stateNames = new Map(demoNetworkStates.map((state) => [state.id, state.name]))
+    return demoPartners.map((partner) => ({
+      ...partner,
+      stateName: partner.state_id ? (stateNames.get(partner.state_id) ?? null) : null,
+    }))
+  }
+
   const db = await getServerClient()
   if (!db) return []
 

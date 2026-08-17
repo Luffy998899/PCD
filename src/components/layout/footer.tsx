@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import { ArrowRight, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 
 import { legalNavigation } from '@/data/navigation'
 import { getFooterColumns } from '@/lib/content/navigation'
@@ -32,6 +32,28 @@ export async function SiteFooter() {
 
   return (
     <footer className="bg-primary text-primary-foreground">
+      {/* Conversion band: one clear next step before the link columns. */}
+      <div className="relative overflow-hidden border-b border-primary-foreground/15 bg-primary-dark">
+        <div className="blister pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
+        <Container className="relative flex flex-col gap-5 py-10 md:flex-row md:items-center md:justify-between md:py-12">
+          <div className="max-w-xl">
+            <h2 className="text-[1.5rem] leading-snug font-semibold tracking-tight text-primary-foreground">
+              Looking for a product, or a distribution partnership?
+            </h2>
+            <p className="mt-2 text-sm text-primary-foreground/75">
+              Tell us what you need and your enquiry goes straight to the team that handles it.
+            </p>
+          </div>
+          <Link
+            href="/contact"
+            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-sm bg-primary-foreground px-6 text-[0.9375rem] font-medium text-primary transition-colors duration-200 hover:bg-primary-foreground/90"
+          >
+            Contact us
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
+        </Container>
+      </div>
+
       <Container className="py-14 md:py-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,20rem)_1fr]">
           <div className="flex flex-col gap-5">

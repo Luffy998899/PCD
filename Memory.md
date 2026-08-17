@@ -296,6 +296,33 @@ Updated at the end of every phase (Rules.md §24).
   and `npm ci` all recover on their own, with Tailwind emitting a full 55KB
   stylesheet containing the design tokens.
 
+### Post-delivery — demo mode and design pass
+- **Demo mode** (`NEXT_PUBLIC_DEMO_MODE=1`): a fictional company fills every
+  database-backed surface, so the site can be reviewed before real content
+  exists. Guarded twice — `isDemoMode()` returns false whenever
+  `APP_ENV === 'production'`, and the launch gate fails a production build with
+  the flag set. Verified: a production build with the flag on contains zero demo
+  content.
+- Demo data lives in `src/data/demo/records.ts` and is injected at the top of
+  each content getter, so the public components are untouched and the demo path
+  reproduces the real rules (unknown filter slugs match nothing, drafts and
+  future-dated articles stay hidden, an expired certificate is labelled).
+- Imagery is abstract SVG in `public/demo/`, generated locally and labelled
+  illustrative. No photorealistic facility, people or pack images were produced:
+  a demo asset that looks like a photograph is the one most likely to survive
+  into production (Rules.md §14).
+- **Design pass**: two-tier header with a utility bar carrying the
+  adverse-event route; hero rebuilt around a "proof card" of things a visitor
+  can actually verify; `blueprint` and `blister` motifs as the site's only
+  decorative signature; snapshot strip divided by hairline rules instead of
+  boxes; accent rule on section eyebrows; product cards with composition and a
+  labelled spec row; footer conversion band. All new colour pairs were
+  contrast-checked and pass 4.5:1.
+- **Regression found by the demo data**: card listings skipped from `h1` to
+  `h3`, because the cards had previously never rendered on empty pages. Fixed
+  with screen-reader-only section headings on nine listing pages. The full audit
+  now covers 44 populated pages with no heading, alt-text or canonical issues.
+
 ---
 
 ## Known gaps / open items
