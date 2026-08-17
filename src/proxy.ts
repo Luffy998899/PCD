@@ -4,6 +4,8 @@ import { createServerClient } from '@supabase/ssr'
 import { SUPABASE_ANON_KEY, SUPABASE_URL, isSupabaseConfigured } from '@/lib/env'
 
 /**
+ * Request proxy (formerly the `middleware` convention, renamed in Next.js 16).
+ *
  * Keeps the Supabase auth session fresh and blocks unauthenticated access to
  * the admin area before a page even renders.
  *
@@ -11,7 +13,7 @@ import { SUPABASE_ANON_KEY, SUPABASE_URL, isSupabaseConfigured } from '@/lib/env
  * calls `requireAdmin()`, and the database policies check the caller's role
  * independently (Rules.md §16).
  */
-export async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const response = NextResponse.next({ request })
 
   if (!isSupabaseConfigured()) {

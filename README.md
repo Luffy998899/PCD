@@ -58,6 +58,34 @@ from page metadata, structured data and outbound email.
 
 Set `NEXT_PUBLIC_APP_ENV=production` for any public deployment.
 
+## Troubleshooting
+
+### `Cannot find native binding` / `Cannot find module '@tailwindcss/oxide-linux-*'`
+
+Tailwind v4 compiles CSS through a platform-specific native binary. This error
+means that binary is absent from `node_modules` — it is an install problem, not
+a problem with the code.
+
+It usually happens when `node_modules` was installed on one platform and is then
+used on another (a container mounting a host `node_modules`, or a devcontainer
+volume created elsewhere), or when npm skips optional dependencies
+([npm/cli#4828](https://github.com/npm/cli/issues/4828)).
+
+Reinstall from the committed lockfile:
+
+```bash
+rm -rf node_modules
+npm ci
+```
+
+`npm ci` is preferred over `npm install` here because it reproduces the exact
+locked versions. The lockfile already lists every platform variant of
+`@tailwindcss/oxide`, so no dependency change is needed. Only if that still
+fails should you also delete `package-lock.json` and run `npm install`, which
+regenerates the lockfile and may change versions.
+
+In a devcontainer, make sure `node_modules` is not bind-mounted from the host.
+
 ## Database
 
 SQL migrations live in [`supabase/migrations`](./supabase/migrations) and are
