@@ -4,12 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "predev": "node scripts/ensure-native-deps.mjs",
     "build": "next build",
+    "prebuild": "node scripts/ensure-native-deps.mjs",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "check:launch": "node scripts/check-launch-readiness.mjs",
     "verify": "npm run typecheck && npm run lint && npm run build && npm run check:launch",
-    "check:launch": "node scripts/check-launch-readiness.mjs"
+    "postinstall": "node scripts/ensure-native-deps.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

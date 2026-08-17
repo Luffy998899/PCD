@@ -279,6 +279,23 @@ Updated at the end of every phase (Rules.md §24).
    company name, addresses, CIN/GST/licence numbers, statistics, products,
    people and certificates all render as placeholders or empty states.
 
+### Post-delivery fixes
+- Migrated `src/middleware.ts` to `src/proxy.ts` (Next.js 16 renamed the
+  convention; the old one warns on every build). Re-verified admin gating after
+  the rename rather than assuming it was safe.
+- **Tailwind native-binding self-repair.** Tailwind v4 compiles CSS through a
+  platform-specific native binary shipped as an optional dependency, which npm
+  skips in several situations (npm/cli#4828, `omit=optional`, a `node_modules`
+  tree built on another platform). The failure surfaces as a PostCSS stack
+  trace that reads like a code fault. `scripts/ensure-native-deps.mjs` detects
+  the missing binding, resolves the correct package for the running
+  platform/libc, and installs it with `--no-save`. Wired to `postinstall`,
+  `predev` and `prebuild`; no-op when healthy; guarded against the recursion
+  caused by npm re-running `postinstall` during the repair install.
+  Verified by deleting the binding and confirming `npm run build`, `npm run dev`
+  and `npm ci` all recover on their own, with Tailwind emitting a full 55KB
+  stylesheet containing the design tokens.
+
 ---
 
 ## Known gaps / open items

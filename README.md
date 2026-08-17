@@ -60,31 +60,31 @@ Set `NEXT_PUBLIC_APP_ENV=production` for any public deployment.
 
 ## Troubleshooting
 
-### `Cannot find native binding` / `Cannot find module '@tailwindcss/oxide-linux-*'`
+### `Cannot find native binding` / `Cannot find module '@tailwindcss/oxide-*'`
 
-Tailwind v4 compiles CSS through a platform-specific native binary. This error
-means that binary is absent from `node_modules` — it is an install problem, not
-a problem with the code.
+**This repairs itself.** Tailwind v4 compiles CSS through a platform-specific
+native binary shipped as an *optional* dependency, and npm skips optional
+dependencies in several situations: the long-standing bug in
+[npm/cli#4828](https://github.com/npm/cli/issues/4828), an `omit=optional`
+setting, or a `node_modules` tree created on a different platform (common with
+containers and devcontainer volumes).
 
-It usually happens when `node_modules` was installed on one platform and is then
-used on another (a container mounting a host `node_modules`, or a devcontainer
-volume created elsewhere), or when npm skips optional dependencies
-([npm/cli#4828](https://github.com/npm/cli/issues/4828)).
+`scripts/ensure-native-deps.mjs` detects that state and installs the correct
+binary for the current platform. It runs automatically on `postinstall`, and
+again before `npm run dev` and `npm run build`, so a missing binding is fixed
+rather than surfacing as a PostCSS stack trace. It is a no-op when the binding
+is already loadable, and it uses `--no-save`, so neither `package.json` nor the
+lockfile is modified.
 
-Reinstall from the committed lockfile:
+If the automatic repair cannot fix it, the script prints the manual fallback:
 
 ```bash
-rm -rf node_modules
-npm ci
+rm -rf node_modules package-lock.json
+npm install
 ```
 
-`npm ci` is preferred over `npm install` here because it reproduces the exact
-locked versions. The lockfile already lists every platform variant of
-`@tailwindcss/oxide`, so no dependency change is needed. Only if that still
-fails should you also delete `package-lock.json` and run `npm install`, which
-regenerates the lockfile and may change versions.
-
-In a devcontainer, make sure `node_modules` is not bind-mounted from the host.
+In a devcontainer, also check that `node_modules` is not bind-mounted from the
+host — a tree installed on another platform will keep failing.
 
 ## Database
 
